@@ -48,24 +48,32 @@
             text-align: center;
             z-index: 100;
             margin-bottom: 20px;
+            position: relative;
         }
 
         .title {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 900;
             margin-bottom: 10px;
             background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple), var(--accent-red));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: var(--text-glow);
-            letter-spacing: 3px;
+            text-shadow: 0 0 20px rgba(0, 243, 255, 0.7);
+            letter-spacing: 4px;
+            line-height: 1.1;
+            /* Force GPU rendering for crisp text */
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .subtitle {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             color: #a0e0ff;
             font-weight: 300;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(160, 224, 255, 0.5);
         }
 
         .simulation-container {
