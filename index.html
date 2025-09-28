@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Black Hole Simulation</title>
+    <title>Black Hole Physics Simulator | Educational Tool</title>
     <style>
         * {
             margin: 0;
@@ -18,83 +18,78 @@
             --neon-purple: #b967ff;
             --accent-orange: #ff6b35;
             --accent-red: #ff2a6d;
-            --text-glow: 0 0 10px currentColor;
+            --text-primary: #ffffff;
+            --text-secondary: #c0e0ff;
+            --panel-bg: rgba(10, 20, 40, 0.85);
+            --border-color: rgba(0, 170, 255, 0.4);
         }
 
         body {
             background: radial-gradient(ellipse at center, var(--cosmic-blue) 0%, var(--deep-space) 70%);
-            color: #fff;
-            font-family: 'Arial', sans-serif;
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
             user-select: none;
+            line-height: 1.6;
         }
 
         .container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            grid-template-rows: auto 1fr auto;
+            height: 100vh;
+            gap: 20px;
+            padding: 20px;
         }
 
         .header {
+            grid-column: 1 / -1;
             text-align: center;
-            z-index: 100;
-            margin-bottom: 20px;
-            position: relative;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .title {
-            font-size: 3.5rem;
-            font-weight: 900;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple), var(--accent-red));
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(0, 243, 255, 0.7);
-            letter-spacing: 4px;
-            line-height: 1.1;
-            /* Force GPU rendering for crisp text */
+            letter-spacing: 2px;
             transform: translateZ(0);
             backface-visibility: hidden;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
         .subtitle {
-            font-size: 1.3rem;
-            color: #a0e0ff;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
             font-weight: 300;
-            letter-spacing: 3px;
-            text-shadow: 0 0 10px rgba(160, 224, 255, 0.5);
+            letter-spacing: 1.5px;
         }
 
         .simulation-container {
-            position: relative;
-            width: 800px;
-            height: 800px;
+            grid-column: 2;
+            grid-row: 2;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
         }
 
         .simulation-area {
             position: relative;
-            width: 700px;
-            height: 700px;
+            width: 600px;
+            height: 600px;
             border-radius: 50%;
             overflow: hidden;
             box-shadow: 
-                0 0 150px rgba(0, 200, 255, 0.4),
-                inset 0 0 150px rgba(0, 100, 255, 0.2);
-            z-index: 1;
+                0 0 100px rgba(0, 200, 255, 0.3),
+                inset 0 0 100px rgba(0, 100, 255, 0.1);
             background: radial-gradient(circle at center, #0a0a2a 0%, #000 70%);
         }
 
@@ -104,8 +99,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 750px;
-            height: 750px;
+            width: 650px;
+            height: 650px;
             border-radius: 50%;
             background: 
                 radial-gradient(circle at center, 
@@ -120,35 +115,13 @@
             filter: blur(10px);
         }
 
-        .spacetime-distortion {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 720px;
-            height: 720px;
-            border-radius: 50%;
-            background: 
-                conic-gradient(
-                    from 0deg,
-                    transparent,
-                    rgba(0, 100, 255, 0.1),
-                    rgba(100, 0, 255, 0.2),
-                    rgba(255, 0, 100, 0.1),
-                    transparent
-                );
-            z-index: 2;
-            animation: distortion-pulse 8s ease-in-out infinite;
-            mix-blend-mode: screen;
-        }
-
         .accretion-disk-outer {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 650px;
-            height: 200px;
+            width: 550px;
+            height: 170px;
             border-radius: 50%;
             background: 
                 radial-gradient(circle at center, 
@@ -173,8 +146,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 500px;
-            height: 120px;
+            width: 420px;
+            height: 100px;
             border-radius: 50%;
             background: 
                 radial-gradient(circle at center, 
@@ -194,53 +167,20 @@
                 inset 0 0 60px rgba(255, 100, 0, 0.4);
         }
 
-        .photon-ring-3 {
+        .photon-ring {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 400px;
-            height: 400px;
-            border-radius: 50%;
-            border: 2px solid transparent;
-            border-image: conic-gradient(from 0deg, #00f3ff, #b967ff, #ff2a6d, #00f3ff) 1;
-            z-index: 5;
-            animation: photon-rotate-3 40s linear infinite;
-            box-shadow: 
-                0 0 40px rgba(0, 243, 255, 0.3),
-                inset 0 0 40px rgba(0, 243, 255, 0.2);
-        }
-
-        .photon-ring-2 {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 320px;
-            height: 320px;
+            width: 340px;
+            height: 340px;
             border-radius: 50%;
             border: 1px dashed rgba(100, 200, 255, 0.6);
             z-index: 6;
-            animation: photon-rotate-2 30s linear infinite reverse;
+            animation: photon-rotate 30s linear infinite reverse;
             box-shadow: 
                 0 0 30px rgba(100, 200, 255, 0.4),
                 inset 0 0 30px rgba(100, 200, 255, 0.3);
-        }
-
-        .photon-ring-1 {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 260px;
-            height: 260px;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            z-index: 7;
-            animation: photon-rotate-1 20s linear infinite;
-            box-shadow: 
-                0 0 25px rgba(255, 255, 255, 0.3),
-                inset 0 0 25px rgba(255, 255, 255, 0.2);
         }
 
         .event-horizon-glow {
@@ -248,8 +188,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 220px;
-            height: 220px;
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
             background: radial-gradient(circle at center, 
                 rgba(255, 0, 0, 0.1) 0%,
@@ -266,8 +206,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 180px;
-            height: 180px;
+            width: 160px;
+            height: 160px;
             border-radius: 50%;
             background: radial-gradient(circle at center, 
                 #000 0%,
@@ -288,8 +228,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             background: radial-gradient(circle at 30% 30%, 
                 #000 0%,
@@ -311,8 +251,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             background: radial-gradient(circle at center, 
                 #000 0%,
@@ -329,32 +269,6 @@
             animation: singularity-pulse 3s ease-in-out infinite;
         }
 
-        .jet-stream {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(90deg);
-            width: 20px;
-            height: 400px;
-            background: linear-gradient(to bottom,
-                transparent,
-                rgba(0, 200, 255, 0.8),
-                rgba(0, 150, 255, 0.9),
-                rgba(0, 100, 255, 1),
-                rgba(0, 150, 255, 0.9),
-                rgba(0, 200, 255, 0.8),
-                transparent
-            );
-            z-index: 2;
-            filter: blur(8px);
-            animation: jet-pulse 4s ease-in-out infinite;
-        }
-
-        .jet-stream-2 {
-            transform: translate(-50%, -50%) rotate(-90deg);
-            animation: jet-pulse 4s ease-in-out infinite reverse;
-        }
-
         .background-stars {
             position: absolute;
             top: 0;
@@ -364,75 +278,184 @@
             z-index: 0;
         }
 
-        .cosmic-dust {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .star-bg, .dust-particle {
+        .star-bg {
             position: absolute;
             border-radius: 50%;
             background-color: white;
         }
 
-        /* Controls */
-        .controls {
-            margin-top: 30px;
-            display: flex;
-            gap: 20px;
-            z-index: 100;
+        /* Panels */
+        .panel {
+            background: var(--panel-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 100%;
         }
 
-        button {
+        .physics-panel {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        .controls-panel {
+            grid-column: 3;
+            grid-row: 2;
+        }
+
+        .footer {
+            grid-column: 1 / -1;
+            grid-row: 3;
+            text-align: center;
+            padding: 15px 0;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .panel-title {
+            font-size: 1.4rem;
+            color: var(--neon-blue);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .concept-card {
+            background: rgba(20, 30, 60, 0.5);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 3px solid var(--neon-blue);
+        }
+
+        .concept-title {
+            font-size: 1.1rem;
+            color: var(--neon-blue);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .concept-icon {
+            font-size: 1.2rem;
+        }
+
+        .concept-description {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .control-section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            color: var(--neon-purple);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .control-btn {
             background: rgba(0, 80, 200, 0.3);
             color: white;
             border: 1px solid var(--neon-blue);
-            padding: 12px 24px;
+            padding: 12px 15px;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
-            font-size: 1rem;
-            font-weight: 600;
-            backdrop-filter: blur(5px);
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        button:hover {
+        .control-btn:hover {
             background: rgba(0, 100, 255, 0.5);
-            box-shadow: 0 0 15px var(--neon-blue);
+            box-shadow: 0 0 10px var(--neon-blue);
             transform: translateY(-2px);
         }
 
         .object-selector {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            z-index: 100;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
 
         .object-option {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
+            background: rgba(20, 30, 60, 0.5);
+            border: 1px solid transparent;
+            border-radius: 8px;
+            padding: 12px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid transparent;
             transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
         }
 
         .object-option:hover {
-            transform: scale(1.1);
+            background: rgba(30, 50, 90, 0.5);
+            transform: translateY(-2px);
         }
 
         .object-option.selected {
             border-color: var(--neon-blue);
-            box-shadow: 0 0 15px var(--neon-blue);
+            background: rgba(0, 100, 255, 0.3);
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .object-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .object-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .stat-item {
+            background: rgba(20, 30, 60, 0.5);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--neon-blue);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
         }
 
         .particle {
@@ -444,78 +467,23 @@
 
         .star {
             background: radial-gradient(circle at 30% 30%, #fff, #a0e0ff);
-            box-shadow: 0 0 15px #a0e0ff;
+            box-shadow: 0 0 10px #a0e0ff;
         }
 
         .planet {
             background: radial-gradient(circle at 30% 30%, #ffaa00, #ff5500);
-            box-shadow: 0 0 15px #ff5500;
+            box-shadow: 0 0 10px #ff5500;
         }
 
         .spaceship {
             background: radial-gradient(circle at 30% 30%, #a0a0ff, #6060ff);
-            box-shadow: 0 0 15px #6060ff;
-        }
-
-        .info-panel {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(10, 20, 40, 0.8);
-            padding: 20px;
-            border-radius: 15px;
-            border: 1px solid var(--neon-blue);
-            max-width: 320px;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-        }
-
-        .info-panel h2 {
-            margin-bottom: 15px;
-            color: var(--neon-blue);
-            font-size: 1.4rem;
-        }
-
-        .info-panel p {
-            margin-bottom: 12px;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            color: #c0e0ff;
-        }
-
-        .stats {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(10, 20, 40, 0.8);
-            padding: 15px;
-            border-radius: 15px;
-            border: 1px solid var(--neon-blue);
-            z-index: 100;
-            backdrop-filter: blur(10px);
-        }
-
-        .stats h3 {
-            margin-bottom: 10px;
-            color: var(--neon-blue);
-            font-size: 1.2rem;
-        }
-
-        .stats p {
-            margin-bottom: 5px;
-            font-size: 0.9rem;
-            color: #c0e0ff;
+            box-shadow: 0 0 10px #6060ff;
         }
 
         /* Animations */
         @keyframes vortex-rotate {
             from { transform: translate(-50%, -50%) rotate(0deg); }
             to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        @keyframes distortion-pulse {
-            0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
-            50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.05); }
         }
 
         @keyframes disk-rotate-outer {
@@ -528,19 +496,9 @@
             to { transform: translate(-50%, -50%) rotate(0deg); }
         }
 
-        @keyframes photon-rotate-1 {
-            from { transform: translate(-50%, -50%) rotate(0deg); }
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        @keyframes photon-rotate-2 {
+        @keyframes photon-rotate {
             from { transform: translate(-50%, -50%) rotate(360deg); }
             to { transform: translate(-50%, -50%) rotate(0deg); }
-        }
-
-        @keyframes photon-rotate-3 {
-            from { transform: translate(-50%, -50%) rotate(0deg); }
-            to { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
         @keyframes horizon-pulse {
@@ -572,39 +530,104 @@
             }
         }
 
-        @keyframes jet-pulse {
-            0%, 100% { opacity: 0.3; height: 350px; }
-            50% { opacity: 0.8; height: 450px; }
-        }
-
         @keyframes particle-spiral {
             0% { transform: translate(0, 0) scale(1); opacity: 1; }
             100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 280px 1fr 280px;
+            }
+            
+            .simulation-area {
+                width: 500px;
+                height: 500px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header class="header">
-            <h1 class="title">ULTIMATE BLACK HOLE</h1>
-            <p class="subtitle">Witness the power of spacetime curvature</p>
+            <h1 class="title">Black Hole Physics Simulator</h1>
+            <p class="subtitle">Interactive Educational Tool - Explore General Relativity Concepts</p>
         </header>
+        
+        <div class="panel physics-panel">
+            <h2 class="panel-title">Black Hole Physics</h2>
+            
+            <div class="concept-card">
+                <h3 class="concept-title">
+                    <span class="concept-icon">⚫</span>
+                    Singularity
+                </h3>
+                <p class="concept-description">
+                    The central point of a black hole where matter is compressed to infinite density and zero volume. All known physical laws break down at this point.
+                </p>
+            </div>
+            
+            <div class="concept-card">
+                <h3 class="concept-title">
+                    <span class="concept-icon">🔴</span>
+                    Event Horizon
+                </h3>
+                <p class="concept-description">
+                    The boundary around a black hole beyond which nothing can escape, not even light. This is the "point of no return" where escape velocity exceeds light speed.
+                </p>
+            </div>
+            
+            <div class="concept-card">
+                <h3 class="concept-title">
+                    <span class="concept-icon">🟡</span>
+                    Accretion Disk
+                </h3>
+                <p class="concept-description">
+                    A disk of superheated gas and dust spiraling into a black hole. Friction heats the material to millions of degrees, emitting intense radiation.
+                </p>
+            </div>
+            
+            <div class="concept-card">
+                <h3 class="concept-title">
+                    <span class="concept-icon">🌀</span>
+                    Photon Sphere
+                </h3>
+                <p class="concept-description">
+                    A region where gravity is so strong that light photons travel in orbits around the black hole. These orbits are unstable - small perturbations cause photons to either escape or fall in.
+                </p>
+            </div>
+            
+            <div class="concept-card">
+                <h3 class="concept-title">
+                    <span class="concept-icon">🌌</span>
+                    Gravitational Lensing
+                </h3>
+                <p class="concept-description">
+                    The bending of light around massive objects due to spacetime curvature. This effect creates multiple images, arcs, or rings of background objects.
+                </p>
+            </div>
+            
+            <div class="concept-card">
+                <h3 class="concept-title">
+                    <span class="concept-icon">🍝</span>
+                    Spaghettification
+                </h3>
+                <p class="concept-description">
+                    The vertical stretching and horizontal compression of objects into long, thin shapes due to extreme tidal forces near a black hole.
+                </p>
+            </div>
+        </div>
         
         <div class="simulation-container">
             <div class="simulation-area" id="simulationArea">
                 <div class="background-stars" id="backgroundStars"></div>
-                <div class="cosmic-dust" id="cosmicDust"></div>
                 
                 <!-- Black Hole Layers -->
                 <div class="gravitational-vortex"></div>
-                <div class="spacetime-distortion"></div>
-                <div class="jet-stream"></div>
-                <div class="jet-stream-2"></div>
                 <div class="accretion-disk-outer"></div>
                 <div class="accretion-disk-inner"></div>
-                <div class="photon-ring-3"></div>
-                <div class="photon-ring-2"></div>
-                <div class="photon-ring-1"></div>
+                <div class="photon-ring"></div>
                 <div class="event-horizon-glow"></div>
                 <div class="event-horizon"></div>
                 <div class="black-hole-core"></div>
@@ -614,48 +637,105 @@
             </div>
         </div>
         
-        <div class="controls">
-            <button id="addParticles">Add Cosmic Dust</button>
-            <button id="addStar">Add Star</button>
-            <button id="addPlanet">Add Planet</button>
-            <button id="addSpaceship">Add Spaceship</button>
-            <button id="reset">Reset Simulation</button>
+        <div class="panel controls-panel">
+            <h2 class="panel-title">Simulation Controls</h2>
+            
+            <div class="control-section">
+                <h3 class="section-title">
+                    <span class="concept-icon">🎮</span>
+                    Object Controls
+                </h3>
+                <div class="control-buttons">
+                    <button id="addParticles" class="control-btn">
+                        <span>✨</span>
+                        Add Particles
+                    </button>
+                    <button id="addStar" class="control-btn">
+                        <span>⭐</span>
+                        Add Star
+                    </button>
+                    <button id="addPlanet" class="control-btn">
+                        <span>🪐</span>
+                        Add Planet
+                    </button>
+                    <button id="addSpaceship" class="control-btn">
+                        <span>🚀</span>
+                        Add Spaceship
+                    </button>
+                </div>
+                
+                <h4 class="section-title">Selected Object Type</h4>
+                <div class="object-selector">
+                    <div class="object-option selected" id="optionStar" data-type="star">
+                        <div class="object-preview" style="background: radial-gradient(circle at 30% 30%, #fff, #a0e0ff);"></div>
+                        <span class="object-label">Star</span>
+                    </div>
+                    <div class="object-option" id="optionPlanet" data-type="planet">
+                        <div class="object-preview" style="background: radial-gradient(circle at 30% 30%, #ffaa00, #ff5500);"></div>
+                        <span class="object-label">Planet</span>
+                    </div>
+                    <div class="object-option" id="optionSpaceship" data-type="spaceship">
+                        <div class="object-preview" style="background: radial-gradient(circle at 30% 30%, #a0a0ff, #6060ff);"></div>
+                        <span class="object-label">Spaceship</span>
+                    </div>
+                    <button id="reset" class="control-btn" style="grid-column: 1 / -1; margin-top: 10px;">
+                        <span>🔄</span>
+                        Reset Simulation
+                    </button>
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <h3 class="section-title">
+                    <span class="concept-icon">📊</span>
+                    Simulation Statistics
+                </h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="objectCount">0</div>
+                        <div class="stat-label">Objects</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="consumedCount">0</div>
+                        <div class="stat-label">Consumed</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="particleCount">0</div>
+                        <div class="stat-label">Particles</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="simTime">00:00</div>
+                        <div class="stat-label">Time</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <h3 class="section-title">
+                    <span class="concept-icon">💡</span>
+                    How to Use
+                </h3>
+                <p class="concept-description" style="margin-bottom: 10px;">
+                    • Click anywhere to throw the selected object
+                </p>
+                <p class="concept-description" style="margin-bottom: 10px;">
+                    • Watch how different objects interact with the black hole
+                </p>
+                <p class="concept-description">
+                    • Observe gravitational effects like lensing and spaghettification
+                </p>
+            </div>
         </div>
         
-        <div class="object-selector">
-            <div class="object-option selected" id="optionStar" data-type="star">
-                <div style="width: 40px; height: 40px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #fff, #a0e0ff);"></div>
-            </div>
-            <div class="object-option" id="optionPlanet" data-type="planet">
-                <div style="width: 40px; height: 40px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #ffaa00, #ff5500);"></div>
-            </div>
-            <div class="object-option" id="optionSpaceship" data-type="spaceship">
-                <div style="width: 40px; height: 40px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #a0a0ff, #6060ff);"></div>
-            </div>
-        </div>
-        
-        <div class="info-panel">
-            <h2>Black Hole Anatomy</h2>
-            <p><strong>Singularity:</strong> Infinite density at the center</p>
-            <p><strong>Event Horizon:</strong> Point of no return</p>
-            <p><strong>Photon Sphere:</strong> Light orbits here</p>
-            <p><strong>Accretion Disk:</strong> Superheated matter</p>
-            <p><strong>Relativistic Jets:</strong> High-energy particle beams</p>
-        </div>
-        
-        <div class="stats">
-            <h3>Simulation Stats</h3>
-            <p>Objects in simulation: <span id="objectCount">0</span></p>
-            <p>Objects consumed: <span id="consumedCount">0</span></p>
-            <p>Active particles: <span id="particleCount">0</span></p>
-        </div>
+        <footer class="footer">
+            <p>Black Hole Physics Simulator • Educational Tool for Understanding General Relativity • Not to Scale</p>
+        </footer>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const simulationArea = document.getElementById('simulationArea');
             const backgroundStars = document.getElementById('backgroundStars');
-            const cosmicDust = document.getElementById('cosmicDust');
             const addParticlesBtn = document.getElementById('addParticles');
             const addStarBtn = document.getElementById('addStar');
             const addPlanetBtn = document.getElementById('addPlanet');
@@ -666,19 +746,21 @@
             const objectCountEl = document.getElementById('objectCount');
             const consumedCountEl = document.getElementById('consumedCount');
             const particleCountEl = document.getElementById('particleCount');
+            const simTimeEl = document.getElementById('simTime');
             
             let objects = [];
             let particles = [];
             let consumedCount = 0;
             let selectedObjectType = 'star';
+            let simulationStartTime = Date.now();
             
             // Create background stars
             function createBackgroundStars() {
-                for (let i = 0; i < 400; i++) {
+                for (let i = 0; i < 300; i++) {
                     const star = document.createElement('div');
                     star.classList.add('star-bg');
                     
-                    const size = Math.random() * 3;
+                    const size = Math.random() * 2;
                     star.style.width = size + 'px';
                     star.style.height = size + 'px';
                     
@@ -687,32 +769,7 @@
                     
                     star.style.opacity = Math.random() * 0.8 + 0.2;
                     
-                    // Add twinkling animation to some stars
-                    if (Math.random() > 0.5) {
-                        star.style.animation = `pulse ${3 + Math.random() * 4}s ease-in-out infinite`;
-                    }
-                    
                     backgroundStars.appendChild(star);
-                }
-            }
-            
-            // Create cosmic dust
-            function createCosmicDust() {
-                for (let i = 0; i < 150; i++) {
-                    const dust = document.createElement('div');
-                    dust.classList.add('dust-particle');
-                    
-                    const size = Math.random() * 2;
-                    dust.style.width = size + 'px';
-                    dust.style.height = size + 'px';
-                    
-                    dust.style.left = Math.random() * 100 + '%';
-                    dust.style.top = Math.random() * 100 + '%';
-                    
-                    dust.style.opacity = Math.random() * 0.3 + 0.1;
-                    dust.style.backgroundColor = `hsl(${200 + Math.random() * 60}, 70%, 70%)`;
-                    
-                    cosmicDust.appendChild(dust);
                 }
             }
             
@@ -734,13 +791,13 @@
                 let size;
                 switch(type) {
                     case 'star':
-                        size = 35;
+                        size = 30;
                         break;
                     case 'planet':
-                        size = 28;
+                        size = 24;
                         break;
                     case 'spaceship':
-                        size = 22;
+                        size = 18;
                         break;
                     default:
                         size = 20;
@@ -806,7 +863,7 @@
                     const distance = Math.sqrt((objX - centerX)**2 + (objY - centerY)**2);
                     
                     // If object reaches event horizon
-                    if (distance < 90) {
+                    if (distance < 80) {
                         // Create spaghettification effect
                         createSpaghettification(objX, objY, type);
                         
@@ -831,23 +888,23 @@
             
             // Create spaghettification effect when object hits event horizon
             function createSpaghettification(x, y, type) {
-                const particlesCount = type === 'star' ? 40 : 25;
+                const particlesCount = type === 'star' ? 35 : 20;
                 const color = type === 'star' ? '#a0e0ff' : type === 'planet' ? '#ff5500' : '#6060ff';
                 
                 for (let i = 0; i < particlesCount; i++) {
                     const particle = document.createElement('div');
                     particle.classList.add('particle');
                     
-                    particle.style.width = '4px';
-                    particle.style.height = '4px';
+                    particle.style.width = '3px';
+                    particle.style.height = '3px';
                     particle.style.backgroundColor = color;
-                    particle.style.boxShadow = `0 0 8px ${color}`;
+                    particle.style.boxShadow = `0 0 5px ${color}`;
                     particle.style.left = x + 'px';
                     particle.style.top = y + 'px';
                     
                     // Create spaghettification effect (elongated trajectories)
                     const angle = Math.random() * Math.PI * 2;
-                    const distance = 60 + Math.random() * 120;
+                    const distance = 50 + Math.random() * 100;
                     
                     const deltaX = Math.cos(angle) * distance;
                     const deltaY = Math.sin(angle) * distance;
@@ -855,7 +912,7 @@
                     particle.style.setProperty('--tx', deltaX + 'px');
                     particle.style.setProperty('--ty', deltaY + 'px');
                     
-                    particle.style.animation = `particle-spiral ${1 + Math.random()}s ease-out forwards`;
+                    particle.style.animation = `particle-spiral ${0.8 + Math.random()}s ease-out forwards`;
                     
                     simulationArea.appendChild(particle);
                     particles.push(particle);
@@ -867,7 +924,7 @@
                             particles = particles.filter(p => p !== particle);
                             updateStats();
                         }
-                    }, 1500);
+                    }, 1200);
                 }
             }
             
@@ -878,12 +935,12 @@
                     particle.classList.add('particle');
                     
                     // Random size and color
-                    const size = 3 + Math.random() * 6;
+                    const size = 2 + Math.random() * 4;
                     const hue = 180 + Math.random() * 60;
                     particle.style.width = size + 'px';
                     particle.style.height = size + 'px';
                     particle.style.backgroundColor = `hsl(${hue}, 100%, 70%)`;
-                    particle.style.boxShadow = `0 0 8px hsl(${hue}, 100%, 70%)`;
+                    particle.style.boxShadow = `0 0 5px hsl(${hue}, 100%, 70%)`;
                     
                     // Random starting position around the edges
                     const side = Math.floor(Math.random() * 4);
@@ -915,8 +972,8 @@
                     const centerX = simulationArea.offsetWidth / 2;
                     const centerY = simulationArea.offsetHeight / 2;
                     
-                    const randomOffsetX = (Math.random() - 0.5) * 150;
-                    const randomOffsetY = (Math.random() - 0.5) * 150;
+                    const randomOffsetX = (Math.random() - 0.5) * 120;
+                    const randomOffsetY = (Math.random() - 0.5) * 120;
                     
                     const targetX = centerX + randomOffsetX;
                     const targetY = centerY + randomOffsetY;
@@ -927,7 +984,7 @@
                     particle.style.setProperty('--tx', deltaX + 'px');
                     particle.style.setProperty('--ty', deltaY + 'px');
                     
-                    const duration = 4 + Math.random() * 6;
+                    const duration = 3 + Math.random() * 5;
                     particle.style.animation = `particle-spiral ${duration}s ease-in forwards`;
                     
                     simulationArea.appendChild(particle);
@@ -951,9 +1008,17 @@
                 particleCountEl.textContent = particles.length;
             }
             
+            // Update simulation timer
+            function updateTimer() {
+                const elapsed = Date.now() - simulationStartTime;
+                const minutes = Math.floor(elapsed / 60000);
+                const seconds = Math.floor((elapsed % 60000) / 1000);
+                simTimeEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
             // Event listeners for buttons
             addParticlesBtn.addEventListener('click', function() {
-                createParticles(40);
+                createParticles(30);
             });
             
             addStarBtn.addEventListener('click', function() {
@@ -988,6 +1053,7 @@
                 objects = [];
                 particles = [];
                 consumedCount = 0;
+                simulationStartTime = Date.now();
                 updateStats();
             });
             
@@ -1002,28 +1068,21 @@
             
             // Create initial environment
             createBackgroundStars();
-            createCosmicDust();
-            createParticles(30);
+            createParticles(20);
             
             // Add particles periodically
             setInterval(() => {
-                if (particles.length < 80) {
-                    createParticles(10);
+                if (particles.length < 60) {
+                    createParticles(5);
                 }
             }, 3000);
             
-            // Add pulse animation to CSS
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes pulse {
-                    0%, 100% { opacity: 0.3; }
-                    50% { opacity: 1; }
-                }
-            `;
-            document.head.appendChild(style);
+            // Update timer every second
+            setInterval(updateTimer, 1000);
             
             // Initial stats update
             updateStats();
+            updateTimer();
         });
     </script>
 </body>
