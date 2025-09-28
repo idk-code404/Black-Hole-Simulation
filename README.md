@@ -2,8 +2,6 @@
 
 An interactive, visually stunning black hole simulation built with HTML5, CSS3, and JavaScript. Experience the physics of spacetime curvature, gravitational lensing, and matter accretion in real-time.
 
-![Black Hole Simulation](screenshot.png)
-
 ## Features
 
 - **Realistic Black Hole Visualization**
