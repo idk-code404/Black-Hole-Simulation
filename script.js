@@ -263,4 +263,317 @@ document.addEventListener('DOMContentLoaded', function() {
             particle.style.top = y + 'px';
             
             // Create spaghettification effect (elongated away from center)
-            const angle =
+            const angle = Math.random() * Math.PI * 2;
+            const distance = 30 + Math.random() * 70;
+            
+            const deltaX = Math.cos(angle) * distance;
+            const deltaY = Math.sin(angle) * distance;
+            
+            particle.style.setProperty('--tx', deltaX + 'px');
+            particle.style.setProperty('--ty', deltaY + 'px');
+            
+            particle.style.animation = `particle-spiral ${0.5 + Math.random()}s ease-out forwards`;
+            
+            simulationArea.appendChild(particle);
+            particles.push(particle);
+            updateStats();
+            
+            setTimeout(() => {
+                if (particle.parentNode) {
+                    particle.parentNode.removeChild(particle);
+                    particles = particles.filter(p => p !== particle);
+                    updateStats();
+                }
+            }, 1000);
+        }
+    }
+    
+    // Create random particles
+    function createParticles(count) {
+        for (let i = 0; i < count; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            // Random properties
+            const size = 2 + Math.random() * 5;
+            const hue = 180 + Math.random() * 60;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.backgroundColor = `hsl(${hue}, 100%, 70%)`;
+            particle.style.boxShadow = `0 0 5px hsl(${hue}, 100%, 70%)`;
+            
+            // Random starting position
+            const side = Math.floor(Math.random() * 4);
+            let startX, startY;
+            
+            switch(side) {
+                case 0: // top
+                    startX = Math.random() * simulationArea.offsetWidth;
+                    startY = 0;
+                    break;
+                case 1: // right
+                    startX = simulationArea.offsetWidth;
+                    startY = Math.random() * simulationArea.offsetHeight;
+                    break;
+                case 2: // bottom
+                    startX = Math.random() * simulationArea.offsetWidth;
+                    startY = simulationArea.offsetHeight;
+                    break;
+                case 3: // left
+                    startX = 0;
+                    startY = Math.random() * simulationArea.offsetHeight;
+                    break;
+            }
+            
+            particle.style.left = startX + 'px';
+            particle.style.top = startY + 'px';
+            
+            // Trajectory with spiral effect
+            const centerX = simulationArea.offsetWidth / 2;
+            const centerY = simulationArea.offsetHeight / 2;
+            
+            const randomOffsetX = (Math.random() - 0.5) * 120;
+            const randomOffsetY = (Math.random() - 0.5) * 120;
+            
+            const targetX = centerX + randomOffsetX;
+            const targetY = centerY + randomOffsetY;
+            
+            const deltaX = targetX - startX;
+            const deltaY = targetY - startY;
+            
+            particle.style.setProperty('--tx', deltaX + 'px');
+            particle.style.setProperty('--ty', deltaY + 'px');
+            
+            const duration = 2 + Math.random() * 5;
+            particle.style.animation = `particle-spiral ${duration}s ease-in forwards`;
+            
+            simulationArea.appendChild(particle);
+            particles.push(particle);
+            updateStats();
+            
+            setTimeout(() => {
+                if (particle.parentNode) {
+                    particle.parentNode.removeChild(particle);
+                    particles = particles.filter(p => p !== particle);
+                    updateStats();
+                }
+            }, duration * 1000);
+        }
+    }
+    
+    // Create nebula effect
+    function createNebula() {
+        for (let i = 0; i < 10; i++) {
+            const nebulaParticle = document.createElement('div');
+            nebulaParticle.classList.add('particle');
+            
+            const size = 10 + Math.random() * 20;
+            const hue = 250 + Math.random() * 60;
+            nebulaParticle.style.width = size + 'px';
+            nebulaParticle.style.height = size + 'px';
+            nebulaParticle.style.backgroundColor = `hsl(${hue}, 70%, 60%)`;
+            nebulaParticle.style.boxShadow = `0 0 20px hsl(${hue}, 100%, 70%)`;
+            nebulaParticle.style.opacity = '0.7';
+            nebulaParticle.style.filter = 'blur(5px)';
+            
+            // Start from a random edge
+            const side = Math.floor(Math.random() * 4);
+            let startX, startY;
+            
+            switch(side) {
+                case 0: // top
+                    startX = Math.random() * simulationArea.offsetWidth;
+                    startY = 0;
+                    break;
+                case 1: // right
+                    startX = simulationArea.offsetWidth;
+                    startY = Math.random() * simulationArea.offsetHeight;
+                    break;
+                case 2: // bottom
+                    startX = Math.random() * simulationArea.offsetWidth;
+                    startY = simulationArea.offsetHeight;
+                    break;
+                case 3: // left
+                    startX = 0;
+                    startY = Math.random() * simulationArea.offsetHeight;
+                    break;
+            }
+            
+            nebulaParticle.style.left = startX + 'px';
+            nebulaParticle.style.top = startY + 'px';
+            
+            // Slow, drifting trajectory
+            const centerX = simulationArea.offsetWidth / 2;
+            const centerY = simulationArea.offsetHeight / 2;
+            
+            const randomOffsetX = (Math.random() - 0.5) * 200;
+            const randomOffsetY = (Math.random() - 0.5) * 200;
+            
+            const targetX = centerX + randomOffsetX;
+            const targetY = centerY + randomOffsetY;
+            
+            const deltaX = targetX - startX;
+            const deltaY = targetY - startY;
+            
+            nebulaParticle.style.setProperty('--tx', deltaX + 'px');
+            nebulaParticle.style.setProperty('--ty', deltaY + 'px');
+            
+            const duration = 10 + Math.random() * 10;
+            nebulaParticle.style.animation = `particle-spiral ${duration}s linear forwards`;
+            
+            simulationArea.appendChild(nebulaParticle);
+            particles.push(nebulaParticle);
+            updateStats();
+            
+            setTimeout(() => {
+                if (nebulaParticle.parentNode) {
+                    nebulaParticle.parentNode.removeChild(nebulaParticle);
+                    particles = particles.filter(p => p !== nebulaParticle);
+                    updateStats();
+                }
+            }, duration * 1000);
+        }
+    }
+    
+    // Create initial particles
+    function createInitialParticles() {
+        createParticles(25);
+    }
+    
+    // Update statistics display
+    function updateStats() {
+        objectCountEl.textContent = objects.length;
+        consumedCountEl.textContent = consumedCount;
+        particleCountEl.textContent = particles.length;
+    }
+    
+    // Start simulation timer
+    function startSimulationTimer() {
+        setInterval(() => {
+            const elapsed = Date.now() - simulationStartTime;
+            const minutes = Math.floor(elapsed / 60000);
+            const seconds = Math.floor((elapsed % 60000) / 1000);
+            simTimeEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }, 1000);
+    }
+    
+    // Toggle gravitational lensing effect
+    function toggleGravitationalLensing() {
+        lensingEnabled = !lensingEnabled;
+        const lensingElement = document.querySelector('.gravitational-lensing');
+        
+        if (lensingEnabled) {
+            lensingElement.style.display = 'block';
+            toggleLensingBtn.innerHTML = '<span class="btn-icon">🌀</span> TOGGLE LENSING';
+        } else {
+            lensingElement.style.display = 'none';
+            toggleLensingBtn.innerHTML = '<span class="btn-icon">🌀</span> ENABLE LENSING';
+        }
+    }
+    
+    // Setup event listeners
+    function setupEventListeners() {
+        // Object selection
+        setupObjectSelection();
+        
+        // Tab switching
+        setupTabs();
+        
+        // Control buttons
+        addParticlesBtn.addEventListener('click', function() {
+            createParticles(30);
+        });
+        
+        addNebulaBtn.addEventListener('click', function() {
+            createNebula();
+        });
+        
+        toggleLensingBtn.addEventListener('click', function() {
+            toggleGravitationalLensing();
+        });
+        
+        resetBtn.addEventListener('click', function() {
+            // Remove all objects and particles
+            objects.forEach(obj => {
+                if (obj.element.parentNode) {
+                    obj.element.parentNode.removeChild(obj.element);
+                }
+            });
+            
+            particles.forEach(particle => {
+                if (particle.parentNode) {
+                    particle.parentNode.removeChild(particle);
+                }
+            });
+            
+            objects = [];
+            particles = [];
+            consumedCount = 0;
+            simulationStartTime = Date.now();
+            updateStats();
+            
+            // Add some new particles
+            createInitialParticles();
+        });
+        
+        // Click to throw selected object
+        simulationArea.addEventListener('click', function(e) {
+            const rect = simulationArea.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            createObject(selectedObjectType, x, y);
+        });
+        
+        // Drag to create multiple objects
+        let isDragging = false;
+        simulationArea.addEventListener('mousedown', function() {
+            isDragging = true;
+        });
+        
+        simulationArea.addEventListener('mouseup', function() {
+            isDragging = false;
+        });
+        
+        simulationArea.addEventListener('mouseleave', function() {
+            isDragging = false;
+        });
+        
+        simulationArea.addEventListener('mousemove', function(e) {
+            if (isDragging) {
+                const rect = simulationArea.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                // Only create objects occasionally while dragging
+                if (Math.random() > 0.7) {
+                    createObject(selectedObjectType, x, y);
+                }
+            }
+        });
+        
+        // Touch support for mobile devices
+        simulationArea.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = simulationArea.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            createObject(selectedObjectType, x, y);
+        });
+    }
+    
+    // Add CSS for particle drift animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes particle-drift {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(var(--drift-x), var(--drift-y)); }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Initialize the simulation
+    init();
+});
