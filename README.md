@@ -41,3 +41,8 @@ An interactive, visually stunning black hole simulation built with HTML5, CSS3, 
 1. Clone the repository:
 ```bash
 git clone https://github.com/yourusername/blackhole-simulator.git
+Navigate to the project directory:
+
+cd blackhole-simulator
+
+open index.html
