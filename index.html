@@ -1,1119 +1,340 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Black Hole Physics Simulator | Educational Tool</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --cosmic-blue: #0a0a2a;
-            --deep-space: #050518;
-            --neon-blue: #00f3ff;
-            --neon-purple: #b967ff;
-            --accent-orange: #ff6b35;
-            --accent-red: #ff2a6d;
-            --text-primary: #ffffff;
-            --text-secondary: #c0e0ff;
-            --panel-bg: rgba(10, 20, 40, 0.85);
-            --border-color: rgba(0, 170, 255, 0.4);
-        }
-
-        body {
-            background: radial-gradient(ellipse at center, var(--cosmic-blue) 0%, var(--deep-space) 70%);
-            color: var(--text-primary);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            user-select: none;
-            line-height: 1.6;
-        }
-
-        .container {
-            display: grid;
-            grid-template-columns: 300px 1fr 300px;
-            grid-template-rows: auto 1fr auto;
-            height: 100vh;
-            gap: 20px;
-            padding: 20px;
-        }
-
-        .header {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border-color);
-            position: relative;
-            z-index: 1000;
-        }
-
-        .title-container {
-            position: relative;
-            display: inline-block;
-        }
-
-        .title {
-            font-size: 2.8rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--neon-blue);
-            letter-spacing: 2px;
-            text-shadow: 
-                0 0 10px rgba(0, 243, 255, 0.8),
-                0 0 20px rgba(0, 243, 255, 0.6),
-                0 0 30px rgba(0, 243, 255, 0.4);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
-            position: relative;
-            z-index: 2;
-        }
-
-        .title-gradient {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple), var(--accent-red));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            z-index: 1;
-            opacity: 0.9;
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            font-weight: 300;
-            letter-spacing: 1.5px;
-            text-shadow: 0 0 10px rgba(160, 224, 255, 0.5);
-        }
-
-        .simulation-container {
-            grid-column: 2;
-            grid-row: 2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .simulation-area {
-            position: relative;
-            width: 600px;
-            height: 600px;
-            border-radius: 50%;
-            overflow: hidden;
-            box-shadow: 
-                0 0 100px rgba(0, 200, 255, 0.3),
-                inset 0 0 100px rgba(0, 100, 255, 0.1);
-            background: radial-gradient(circle at center, #0a0a2a 0%, #000 70%);
-        }
-
-        /* Enhanced Black Hole Layers */
-        .gravitational-vortex {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 650px;
-            height: 650px;
-            border-radius: 50%;
-            background: 
-                radial-gradient(circle at center, 
-                    transparent 30%,
-                    rgba(0, 50, 150, 0.1) 40%,
-                    rgba(0, 100, 200, 0.2) 45%,
-                    rgba(0, 150, 255, 0.3) 50%,
-                    transparent 60%
-                );
-            z-index: 1;
-            animation: vortex-rotate 120s linear infinite;
-            filter: blur(10px);
-        }
-
-        .accretion-disk-outer {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 550px;
-            height: 170px;
-            border-radius: 50%;
-            background: 
-                radial-gradient(circle at center, 
-                    transparent 35%,
-                    rgba(255, 200, 0, 0.1) 40%,
-                    rgba(255, 150, 0, 0.3) 45%,
-                    rgba(255, 100, 0, 0.6) 50%,
-                    rgba(255, 50, 0, 0.8) 55%,
-                    rgba(255, 0, 0, 0.9) 60%,
-                    transparent 70%
-                );
-            animation: disk-rotate-outer 25s linear infinite;
-            z-index: 3;
-            filter: blur(2px) brightness(1.3);
-            box-shadow: 
-                0 0 60px rgba(255, 100, 0, 0.5),
-                inset 0 0 40px rgba(255, 50, 0, 0.3);
-        }
-
-        .accretion-disk-inner {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 420px;
-            height: 100px;
-            border-radius: 50%;
-            background: 
-                radial-gradient(circle at center, 
-                    transparent 25%,
-                    rgba(255, 255, 0, 0.2) 30%,
-                    rgba(255, 200, 0, 0.5) 35%,
-                    rgba(255, 150, 0, 0.8) 40%,
-                    rgba(255, 100, 0, 0.9) 45%,
-                    rgba(255, 50, 0, 1) 50%,
-                    transparent 60%
-                );
-            animation: disk-rotate-inner 15s linear infinite reverse;
-            z-index: 4;
-            filter: blur(1px) brightness(1.5);
-            box-shadow: 
-                0 0 80px rgba(255, 150, 0, 0.6),
-                inset 0 0 60px rgba(255, 100, 0, 0.4);
-        }
-
-        .photon-ring {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 340px;
-            height: 340px;
-            border-radius: 50%;
-            border: 1px dashed rgba(100, 200, 255, 0.6);
-            z-index: 6;
-            animation: photon-rotate 30s linear infinite reverse;
-            box-shadow: 
-                0 0 30px rgba(100, 200, 255, 0.4),
-                inset 0 0 30px rgba(100, 200, 255, 0.3);
-        }
-
-        .event-horizon-glow {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background: radial-gradient(circle at center, 
-                rgba(255, 0, 0, 0.1) 0%,
-                rgba(255, 50, 0, 0.3) 30%,
-                rgba(255, 0, 0, 0.6) 50%,
-                transparent 70%);
-            z-index: 8;
-            animation: horizon-pulse 4s ease-in-out infinite;
-            filter: blur(10px);
-        }
-
-        .event-horizon {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 160px;
-            height: 160px;
-            border-radius: 50%;
-            background: radial-gradient(circle at center, 
-                #000 0%,
-                #1a001a 30%,
-                #330033 60%,
-                #000 100%);
-            z-index: 9;
-            box-shadow: 
-                0 0 0 5px rgba(255, 0, 0, 0.8),
-                0 0 0 10px rgba(255, 50, 0, 0.6),
-                0 0 0 15px rgba(255, 100, 0, 0.4),
-                0 0 40px 20px rgba(255, 0, 0, 0.5),
-                inset 0 0 60px rgba(255, 0, 0, 0.3);
-        }
-
-        .black-hole-core {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, 
-                #000 0%,
-                #000 20%,
-                #1a001a 40%,
-                #330033 60%,
-                #000 100%);
-            z-index: 10;
-            box-shadow: 
-                0 0 0 10px rgba(0, 0, 0, 0.9),
-                0 0 0 20px rgba(30, 0, 30, 0.7),
-                0 0 60px 40px rgba(100, 0, 100, 0.5),
-                inset 0 0 80px rgba(150, 0, 150, 0.4);
-            animation: core-rotation 60s linear infinite;
-        }
-
-        .singularity {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: radial-gradient(circle at center, 
-                #000 0%,
-                #000 30%,
-                #000 70%,
-                #000 100%);
-            z-index: 11;
-            box-shadow: 
-                0 0 0 3px rgba(255, 0, 0, 0.9),
-                0 0 0 6px rgba(255, 50, 0, 0.7),
-                0 0 0 9px rgba(255, 100, 0, 0.5),
-                0 0 0 12px rgba(255, 150, 0, 0.3),
-                0 0 30px 15px rgba(255, 0, 0, 0.6);
-            animation: singularity-pulse 3s ease-in-out infinite;
-        }
-
-        .background-stars {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-        }
-
-        .star-bg {
-            position: absolute;
-            border-radius: 50%;
-            background-color: white;
-        }
-
-        /* Panels */
-        .panel {
-            background: var(--panel-bg);
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            overflow-y: auto;
-            max-height: 100%;
-        }
-
-        .physics-panel {
-            grid-column: 1;
-            grid-row: 2;
-        }
-
-        .controls-panel {
-            grid-column: 3;
-            grid-row: 2;
-        }
-
-        .footer {
-            grid-column: 1 / -1;
-            grid-row: 3;
-            text-align: center;
-            padding: 15px 0;
-            border-top: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .panel-title {
-            font-size: 1.4rem;
-            color: var(--neon-blue);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
-            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
-        }
-
-        .concept-card {
-            background: rgba(20, 30, 60, 0.5);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-left: 3px solid var(--neon-blue);
-        }
-
-        .concept-title {
-            font-size: 1.1rem;
-            color: var(--neon-blue);
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .concept-icon {
-            font-size: 1.2rem;
-        }
-
-        .concept-description {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-
-        .control-section {
-            margin-bottom: 25px;
-        }
-
-        .section-title {
-            font-size: 1.1rem;
-            color: var(--neon-purple);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .control-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .control-btn {
-            background: rgba(0, 80, 200, 0.3);
-            color: white;
-            border: 1px solid var(--neon-blue);
-            padding: 12px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.9rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .control-btn:hover {
-            background: rgba(0, 100, 255, 0.5);
-            box-shadow: 0 0 10px var(--neon-blue);
-            transform: translateY(-2px);
-        }
-
-        .object-selector {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .object-option {
-            background: rgba(20, 30, 60, 0.5);
-            border: 1px solid transparent;
-            border-radius: 8px;
-            padding: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .object-option:hover {
-            background: rgba(30, 50, 90, 0.5);
-            transform: translateY(-2px);
-        }
-
-        .object-option.selected {
-            border-color: var(--neon-blue);
-            background: rgba(0, 100, 255, 0.3);
-            box-shadow: 0 0 10px var(--neon-blue);
-        }
-
-        .object-preview {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-        }
-
-        .object-label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .stat-item {
-            background: rgba(20, 30, 60, 0.5);
-            border-radius: 8px;
-            padding: 12px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--neon-blue);
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .star {
-            background: radial-gradient(circle at 30% 30%, #fff, #a0e0ff);
-            box-shadow: 0 0 10px #a0e0ff;
-        }
-
-        .planet {
-            background: radial-gradient(circle at 30% 30%, #ffaa00, #ff5500);
-            box-shadow: 0 0 10px #ff5500;
-        }
-
-        .spaceship {
-            background: radial-gradient(circle at 30% 30%, #a0a0ff, #6060ff);
-            box-shadow: 0 0 10px #6060ff;
-        }
-
-        /* Animations */
-        @keyframes vortex-rotate {
-            from { transform: translate(-50%, -50%) rotate(0deg); }
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        @keyframes disk-rotate-outer {
-            from { transform: translate(-50%, -50%) rotate(0deg); }
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        @keyframes disk-rotate-inner {
-            from { transform: translate(-50%, -50%) rotate(360deg); }
-            to { transform: translate(-50%, -50%) rotate(0deg); }
-        }
-
-        @keyframes photon-rotate {
-            from { transform: translate(-50%, -50%) rotate(360deg); }
-            to { transform: translate(-50%, -50%) rotate(0deg); }
-        }
-
-        @keyframes horizon-pulse {
-            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
-            50% { opacity: 0.9; transform: translate(-50%, -50%) scale(1.1); }
-        }
-
-        @keyframes core-rotation {
-            from { transform: translate(-50%, -50%) rotate(0deg); }
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        @keyframes singularity-pulse {
-            0%, 100% { 
-                box-shadow: 
-                    0 0 0 3px rgba(255, 0, 0, 0.9),
-                    0 0 0 6px rgba(255, 50, 0, 0.7),
-                    0 0 0 9px rgba(255, 100, 0, 0.5),
-                    0 0 0 12px rgba(255, 150, 0, 0.3),
-                    0 0 30px 15px rgba(255, 0, 0, 0.6);
-            }
-            50% { 
-                box-shadow: 
-                    0 0 0 5px rgba(255, 0, 0, 1),
-                    0 0 0 10px rgba(255, 50, 0, 0.8),
-                    0 0 0 15px rgba(255, 100, 0, 0.6),
-                    0 0 0 20px rgba(255, 150, 0, 0.4),
-                    0 0 40px 25px rgba(255, 0, 0, 0.8);
-            }
-        }
-
-        @keyframes particle-spiral {
-            0% { transform: translate(0, 0) scale(1); opacity: 1; }
-            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 1200px) {
-            .container {
-                grid-template-columns: 280px 1fr 280px;
-            }
-            
-            .simulation-area {
-                width: 500px;
-                height: 500px;
-            }
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Interactive Black Hole Simulator — Robust Loader</title>
+  <style>
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial;background:#06060a;color:#e6eef8}
+    #app{display:flex;min-height:100vh;flex-direction:row}
+    #canvas-wrap{flex:1;position:relative;overflow:hidden}
+    canvas{display:block;width:100%;height:100%}
+    /* Sidebar */
+    #sidebar{width:360px;max-width:40vw;background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.02));backdrop-filter:blur(6px);padding:18px;box-sizing:border-box;border-left:1px solid rgba(255,255,255,0.03)}
+    #sidebar h1{font-size:18px;margin:6px 0 12px}
+    .control-row{display:flex;align-items:center;gap:8px;margin:8px 0}
+    label{font-size:13px;color:#cfe3ff;min-width:90px}
+    input[type=range]{flex:1}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 10px;border-radius:8px;color:#dfeeff;cursor:pointer}
+    .panel{background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0.005));padding:12px;border-radius:8px;margin:10px 0}
+    .small{font-size:13px;color:#bcd3ff}
+    .footer{font-size:12px;color:#9fb8ff;margin-top:10px}
+    #loaderMsg{position:absolute;left:12px;bottom:12px;color:#9fb8ff;background:rgba(0,0,0,0.35);padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);z-index:20}
+    /* Responsive */
+    @media (max-width:900px){#sidebar{position:absolute;right:0;top:0;height:100vh;z-index:6;transform:translateX(0);max-width:95vw;width:320px}}    
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <div class="title-container">
-                <h1 class="title">Black Hole Physics Simulator</h1>
-                <div class="title-gradient">Black Hole Physics Simulator</div>
-            </div>
-            <p class="subtitle">Interactive Educational Tool - Explore General Relativity Concepts</p>
-        </header>
-        
-        <div class="panel physics-panel">
-            <h2 class="panel-title">Black Hole Physics</h2>
-            
-            <div class="concept-card">
-                <h3 class="concept-title">
-                    <span class="concept-icon">⚫</span>
-                    Singularity
-                </h3>
-                <p class="concept-description">
-                    The central point of a black hole where matter is compressed to infinite density and zero volume. All known physical laws break down at this point.
-                </p>
-            </div>
-            
-            <div class="concept-card">
-                <h3 class="concept-title">
-                    <span class="concept-icon">🔴</span>
-                    Event Horizon
-                </h3>
-                <p class="concept-description">
-                    The boundary around a black hole beyond which nothing can escape, not even light. This is the "point of no return" where escape velocity exceeds light speed.
-                </p>
-            </div>
-            
-            <div class="concept-card">
-                <h3 class="concept-title">
-                    <span class="concept-icon">🟡</span>
-                    Accretion Disk
-                </h3>
-                <p class="concept-description">
-                    A disk of superheated gas and dust spiraling into a black hole. Friction heats the material to millions of degrees, emitting intense radiation.
-                </p>
-            </div>
-            
-            <div class="concept-card">
-                <h3 class="concept-title">
-                    <span class="concept-icon">🌀</span>
-                    Photon Sphere
-                </h3>
-                <p class="concept-description">
-                    A region where gravity is so strong that light photons travel in orbits around the black hole. These orbits are unstable - small perturbations cause photons to either escape or fall in.
-                </p>
-            </div>
-            
-            <div class="concept-card">
-                <h3 class="concept-title">
-                    <span class="concept-icon">🌌</span>
-                    Gravitational Lensing
-                </h3>
-                <p class="concept-description">
-                    The bending of light around massive objects due to spacetime curvature. This effect creates multiple images, arcs, or rings of background objects.
-                </p>
-            </div>
-            
-            <div class="concept-card">
-                <h3 class="concept-title">
-                    <span class="concept-icon">🍝</span>
-                    Spaghettification
-                </h3>
-                <p class="concept-description">
-                    The vertical stretching and horizontal compression of objects into long, thin shapes due to extreme tidal forces near a black hole.
-                </p>
-            </div>
-        </div>
-        
-        <div class="simulation-container">
-            <div class="simulation-area" id="simulationArea">
-                <div class="background-stars" id="backgroundStars"></div>
-                
-                <!-- Black Hole Layers -->
-                <div class="gravitational-vortex"></div>
-                <div class="accretion-disk-outer"></div>
-                <div class="accretion-disk-inner"></div>
-                <div class="photon-ring"></div>
-                <div class="event-horizon-glow"></div>
-                <div class="event-horizon"></div>
-                <div class="black-hole-core"></div>
-                <div class="singularity"></div>
-                
-                <!-- Particles will be generated by JavaScript -->
-            </div>
-        </div>
-        
-        <div class="panel controls-panel">
-            <h2 class="panel-title">Simulation Controls</h2>
-            
-            <div class="control-section">
-                <h3 class="section-title">
-                    <span class="concept-icon">🎮</span>
-                    Object Controls
-                </h3>
-                <div class="control-buttons">
-                    <button id="addParticles" class="control-btn">
-                        <span>✨</span>
-                        Add Particles
-                    </button>
-                    <button id="addStar" class="control-btn">
-                        <span>⭐</span>
-                        Add Star
-                    </button>
-                    <button id="addPlanet" class="control-btn">
-                        <span>🪐</span>
-                        Add Planet
-                    </button>
-                    <button id="addSpaceship" class="control-btn">
-                        <span>🚀</span>
-                        Add Spaceship
-                    </button>
-                </div>
-                
-                <h4 class="section-title">Selected Object Type</h4>
-                <div class="object-selector">
-                    <div class="object-option selected" id="optionStar" data-type="star">
-                        <div class="object-preview" style="background: radial-gradient(circle at 30% 30%, #fff, #a0e0ff);"></div>
-                        <span class="object-label">Star</span>
-                    </div>
-                    <div class="object-option" id="optionPlanet" data-type="planet">
-                        <div class="object-preview" style="background: radial-gradient(circle at 30% 30%, #ffaa00, #ff5500);"></div>
-                        <span class="object-label">Planet</span>
-                    </div>
-                    <div class="object-option" id="optionSpaceship" data-type="spaceship">
-                        <div class="object-preview" style="background: radial-gradient(circle at 30% 30%, #a0a0ff, #6060ff);"></div>
-                        <span class="object-label">Spaceship</span>
-                    </div>
-                    <button id="reset" class="control-btn" style="grid-column: 1 / -1; margin-top: 10px;">
-                        <span>🔄</span>
-                        Reset Simulation
-                    </button>
-                </div>
-            </div>
-            
-            <div class="control-section">
-                <h3 class="section-title">
-                    <span class="concept-icon">📊</span>
-                    Simulation Statistics
-                </h3>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-value" id="objectCount">0</div>
-                        <div class="stat-label">Objects</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="consumedCount">0</div>
-                        <div class="stat-label">Consumed</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="particleCount">0</div>
-                        <div class="stat-label">Particles</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="simTime">00:00</div>
-                        <div class="stat-label">Time</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="control-section">
-                <h3 class="section-title">
-                    <span class="concept-icon">💡</span>
-                    How to Use
-                </h3>
-                <p class="concept-description" style="margin-bottom: 10px;">
-                    • Click anywhere to throw the selected object
-                </p>
-                <p class="concept-description" style="margin-bottom: 10px;">
-                    • Watch how different objects interact with the black hole
-                </p>
-                <p class="concept-description">
-                    • Observe gravitational effects like lensing and spaghettification
-                </p>
-            </div>
-        </div>
-        
-        <footer class="footer">
-            <p>Black Hole Physics Simulator • Educational Tool for Understanding General Relativity • Not to Scale</p>
-        </footer>
+  <div id="app">
+    <div id="canvas-wrap">
+      <canvas id="three-canvas"></canvas>
+      <canvas id="fallback-canvas" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%"></canvas>
+      <div id="hud" style="position:absolute;left:12px;top:12px;color:#dfeeff;z-index:5;font-size:13px;backdrop-filter:blur(4px);padding:8px;border-radius:8px;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.03)">
+        <div id="info-line">Black Hole Simulator — WebGL / Three.js</div>
+      </div>
+      <div id="loaderMsg">Initializing…</div>
     </div>
+    <aside id="sidebar">
+      <h1>Black Hole Simulator</h1>
+      <div class="panel">
+        <div class="control-row">
+          <label>Mass (M☉)</label>
+          <input id="mass" type="range" min="1" max="100" step="1" value="10">
+          <div class="small" id="mass-val">10</div>
+        </div>
+        <div class="control-row">
+          <label>Spin (a)</label>
+          <input id="spin" type="range" min="0" max="0.999" step="0.001" value="0.5">
+          <div class="small" id="spin-val">0.500</div>
+        </div>
+        <div class="control-row">
+          <label>Particles</label>
+          <input id="particles" type="range" min="100" max="20000" step="100" value="3000">
+          <div class="small" id="particles-val">3000</div>
+        </div>
+        <div class="control-row">
+          <label>Physics</label>
+          <select id="physics-mode">
+            <option value="simple">Simplified</option>
+            <option value="advanced">Advanced (relativistic)</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label>Lens</label>
+          <input id="toggle-lens" type="checkbox" checked>
+        </div>
+        <div class="control-row">
+          <label>Stylized Mode</label>
+          <input id="stylized-mode" type="checkbox" checked>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button id="reset" class="btn">Reset</button>
+          <button id="screenshot" class="btn">Screenshot</button>
+        </div>
+      </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const simulationArea = document.getElementById('simulationArea');
-            const backgroundStars = document.getElementById('backgroundStars');
-            const addParticlesBtn = document.getElementById('addParticles');
-            const addStarBtn = document.getElementById('addStar');
-            const addPlanetBtn = document.getElementById('addPlanet');
-            const addSpaceshipBtn = document.getElementById('addSpaceship');
-            const resetBtn = document.getElementById('reset');
-            const objectOptions = document.querySelectorAll('.object-option');
-            
-            const objectCountEl = document.getElementById('objectCount');
-            const consumedCountEl = document.getElementById('consumedCount');
-            const particleCountEl = document.getElementById('particleCount');
-            const simTimeEl = document.getElementById('simTime');
-            
-            let objects = [];
-            let particles = [];
-            let consumedCount = 0;
-            let selectedObjectType = 'star';
-            let simulationStartTime = Date.now();
-            
-            // Create background stars
-            function createBackgroundStars() {
-                for (let i = 0; i < 300; i++) {
-                    const star = document.createElement('div');
-                    star.classList.add('star-bg');
-                    
-                    const size = Math.random() * 2;
-                    star.style.width = size + 'px';
-                    star.style.height = size + 'px';
-                    
-                    star.style.left = Math.random() * 100 + '%';
-                    star.style.top = Math.random() * 100 + '%';
-                    
-                    star.style.opacity = Math.random() * 0.8 + 0.2;
-                    
-                    backgroundStars.appendChild(star);
-                }
-            }
-            
-            // Object selection
-            objectOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    objectOptions.forEach(opt => opt.classList.remove('selected'));
-                    this.classList.add('selected');
-                    selectedObjectType = this.getAttribute('data-type');
-                });
-            });
-            
-            // Function to create a thrown object
-            function createObject(type, x, y) {
-                const obj = document.createElement('div');
-                obj.classList.add('particle');
-                obj.classList.add(type);
-                
-                let size;
-                switch(type) {
-                    case 'star':
-                        size = 30;
-                        break;
-                    case 'planet':
-                        size = 24;
-                        break;
-                    case 'spaceship':
-                        size = 18;
-                        break;
-                    default:
-                        size = 20;
-                }
-                
-                obj.style.width = size + 'px';
-                obj.style.height = size + 'px';
-                obj.style.left = x + 'px';
-                obj.style.top = y + 'px';
-                
-                // Calculate trajectory towards the center (black hole)
-                const centerX = simulationArea.offsetWidth / 2;
-                const centerY = simulationArea.offsetHeight / 2;
-                
-                // Add realistic gravitational spiral
-                const spiralFactor = 0.8;
-                const randomOffsetX = (Math.random() - 0.5) * 80;
-                const randomOffsetY = (Math.random() - 0.5) * 80;
-                
-                const targetX = centerX + randomOffsetX;
-                const targetY = centerY + randomOffsetY;
-                
-                const deltaX = (targetX - x) * spiralFactor;
-                const deltaY = (targetY - y) * spiralFactor;
-                
-                // Set CSS custom properties for animation
-                obj.style.setProperty('--tx', deltaX + 'px');
-                obj.style.setProperty('--ty', deltaY + 'px');
-                
-                // Different animation durations based on object type
-                let duration;
-                switch(type) {
-                    case 'star':
-                        duration = 6 + Math.random() * 3;
-                        break;
-                    case 'planet':
-                        duration = 7 + Math.random() * 3;
-                        break;
-                    case 'spaceship':
-                        duration = 5 + Math.random() * 2;
-                        break;
-                    default:
-                        duration = 6;
-                }
-                
-                obj.style.animation = `particle-spiral ${duration}s ease-in forwards`;
-                
-                simulationArea.appendChild(obj);
-                objects.push({element: obj, type: type});
-                updateStats();
-                
-                // Remove object after animation completes or when it hits the event horizon
-                const checkInterval = setInterval(() => {
-                    const objRect = obj.getBoundingClientRect();
-                    const areaRect = simulationArea.getBoundingClientRect();
-                    
-                    const objX = objRect.left + objRect.width/2 - areaRect.left;
-                    const objY = objRect.top + objRect.height/2 - areaRect.top;
-                    
-                    const centerX = areaRect.width / 2;
-                    const centerY = areaRect.height / 2;
-                    
-                    const distance = Math.sqrt((objX - centerX)**2 + (objY - centerY)**2);
-                    
-                    // If object reaches event horizon
-                    if (distance < 80) {
-                        // Create spaghettification effect
-                        createSpaghettification(objX, objY, type);
-                        
-                        obj.remove();
-                        objects = objects.filter(o => o.element !== obj);
-                        consumedCount++;
-                        updateStats();
-                        clearInterval(checkInterval);
-                    }
-                }, 50);
-                
-                // Also remove after a timeout as backup
-                setTimeout(() => {
-                    if (obj.parentNode) {
-                        obj.remove();
-                        objects = objects.filter(o => o.element !== obj);
-                        updateStats();
-                    }
-                    clearInterval(checkInterval);
-                }, duration * 1000);
-            }
-            
-            // Create spaghettification effect when object hits event horizon
-            function createSpaghettification(x, y, type) {
-                const particlesCount = type === 'star' ? 35 : 20;
-                const color = type === 'star' ? '#a0e0ff' : type === 'planet' ? '#ff5500' : '#6060ff';
-                
-                for (let i = 0; i < particlesCount; i++) {
-                    const particle = document.createElement('div');
-                    particle.classList.add('particle');
-                    
-                    particle.style.width = '3px';
-                    particle.style.height = '3px';
-                    particle.style.backgroundColor = color;
-                    particle.style.boxShadow = `0 0 5px ${color}`;
-                    particle.style.left = x + 'px';
-                    particle.style.top = y + 'px';
-                    
-                    // Create spaghettification effect (elongated trajectories)
-                    const angle = Math.random() * Math.PI * 2;
-                    const distance = 50 + Math.random() * 100;
-                    
-                    const deltaX = Math.cos(angle) * distance;
-                    const deltaY = Math.sin(angle) * distance;
-                    
-                    particle.style.setProperty('--tx', deltaX + 'px');
-                    particle.style.setProperty('--ty', deltaY + 'px');
-                    
-                    particle.style.animation = `particle-spiral ${0.8 + Math.random()}s ease-out forwards`;
-                    
-                    simulationArea.appendChild(particle);
-                    particles.push(particle);
-                    updateStats();
-                    
-                    setTimeout(() => {
-                        if (particle.parentNode) {
-                            particle.parentNode.removeChild(particle);
-                            particles = particles.filter(p => p !== particle);
-                            updateStats();
-                        }
-                    }, 1200);
-                }
-            }
-            
-            // Function to create random particles
-            function createParticles(count) {
-                for (let i = 0; i < count; i++) {
-                    const particle = document.createElement('div');
-                    particle.classList.add('particle');
-                    
-                    // Random size and color
-                    const size = 2 + Math.random() * 4;
-                    const hue = 180 + Math.random() * 60;
-                    particle.style.width = size + 'px';
-                    particle.style.height = size + 'px';
-                    particle.style.backgroundColor = `hsl(${hue}, 100%, 70%)`;
-                    particle.style.boxShadow = `0 0 5px hsl(${hue}, 100%, 70%)`;
-                    
-                    // Random starting position around the edges
-                    const side = Math.floor(Math.random() * 4);
-                    let startX, startY;
-                    
-                    switch(side) {
-                        case 0: // top
-                            startX = Math.random() * simulationArea.offsetWidth;
-                            startY = 0;
-                            break;
-                        case 1: // right
-                            startX = simulationArea.offsetWidth;
-                            startY = Math.random() * simulationArea.offsetHeight;
-                            break;
-                        case 2: // bottom
-                            startX = Math.random() * simulationArea.offsetWidth;
-                            startY = simulationArea.offsetHeight;
-                            break;
-                        case 3: // left
-                            startX = 0;
-                            startY = Math.random() * simulationArea.offsetHeight;
-                            break;
-                    }
-                    
-                    particle.style.left = startX + 'px';
-                    particle.style.top = startY + 'px';
-                    
-                    // Calculate trajectory with spiral effect
-                    const centerX = simulationArea.offsetWidth / 2;
-                    const centerY = simulationArea.offsetHeight / 2;
-                    
-                    const randomOffsetX = (Math.random() - 0.5) * 120;
-                    const randomOffsetY = (Math.random() - 0.5) * 120;
-                    
-                    const targetX = centerX + randomOffsetX;
-                    const targetY = centerY + randomOffsetY;
-                    
-                    const deltaX = targetX - startX;
-                    const deltaY = targetY - startY;
-                    
-                    particle.style.setProperty('--tx', deltaX + 'px');
-                    particle.style.setProperty('--ty', deltaY + 'px');
-                    
-                    const duration = 3 + Math.random() * 5;
-                    particle.style.animation = `particle-spiral ${duration}s ease-in forwards`;
-                    
-                    simulationArea.appendChild(particle);
-                    particles.push(particle);
-                    updateStats();
-                    
-                    setTimeout(() => {
-                        if (particle.parentNode) {
-                            particle.parentNode.removeChild(particle);
-                            particles = particles.filter(p => p !== particle);
-                            updateStats();
-                        }
-                    }, duration * 1000);
-                }
-            }
-            
-            // Update statistics display
-            function updateStats() {
-                objectCountEl.textContent = objects.length;
-                consumedCountEl.textContent = consumedCount;
-                particleCountEl.textContent = particles.length;
-            }
-            
-            // Update simulation timer
-            function updateTimer() {
-                const elapsed = Date.now() - simulationStartTime;
-                const minutes = Math.floor(elapsed / 60000);
-                const seconds = Math.floor((elapsed % 60000) / 1000);
-                simTimeEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            }
-            
-            // Event listeners for buttons
-            addParticlesBtn.addEventListener('click', function() {
-                createParticles(30);
-            });
-            
-            addStarBtn.addEventListener('click', function() {
-                const x = Math.random() * simulationArea.offsetWidth;
-                const y = Math.random() * simulationArea.offsetHeight;
-                createObject('star', x, y);
-            });
-            
-            addPlanetBtn.addEventListener('click', function() {
-                const x = Math.random() * simulationArea.offsetWidth;
-                const y = Math.random() * simulationArea.offsetHeight;
-                createObject('planet', x, y);
-            });
-            
-            addSpaceshipBtn.addEventListener('click', function() {
-                const x = Math.random() * simulationArea.offsetWidth;
-                const y = Math.random() * simulationArea.offsetHeight;
-                createObject('spaceship', x, y);
-            });
-            
-            resetBtn.addEventListener('click', function() {
-                objects.forEach(obj => {
-                    if (obj.element.parentNode) {
-                        obj.element.parentNode.removeChild(obj.element);
-                    }
-                });
-                particles.forEach(particle => {
-                    if (particle.parentNode) {
-                        particle.parentNode.removeChild(particle);
-                    }
-                });
-                objects = [];
-                particles = [];
-                consumedCount = 0;
-                simulationStartTime = Date.now();
-                updateStats();
-            });
-            
-            // Click to throw selected object
-            simulationArea.addEventListener('click', function(e) {
-                const rect = simulationArea.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                createObject(selectedObjectType, x, y);
-            });
-            
-            // Create initial environment
-            createBackgroundStars();
-            createParticles(20);
-            
-            // Add particles periodically
-            setInterval(() => {
-                if (particles.length < 60) {
-                    createParticles(5);
-                }
-            }, 3000);
-            
-            // Update timer every second
-            setInterval(updateTimer, 1000);
-            
-            // Initial stats update
-            updateStats();
-            updateTimer();
-        });
-    </script>
+      <div class="panel">
+        <h3 style="margin:0 0 8px 0">Visualization</h3>
+        <p class="small">Accretion disk uses a shader that supports a stylized mode (bright photon ring, stronger Doppler beaming, rim glow). Toggle <em>Stylized Mode</em> to exaggerate visibility for demos.</p>
+      </div>
+
+      <div class="panel">
+        <h3 style="margin:0 0 8px 0">Educational Panels</h3>
+        <div class="small"><strong>Event horizon:</strong> the boundary within which nothing, not even light, can escape.</div>
+        <div class="small"><strong>Accretion disk:</strong> hot plasma orbiting the black hole; friction makes it glow.</div>
+        <div class="small"><strong>Photon ring:</strong> the bright ring produced by light orbiting the black hole — emphasized in Stylized Mode.</div>
+        <div class="small"><strong>Spin (a):</strong> dimensionless angular momentum; affects disk shape and ISCO.</div>
+        <div class="small"><strong>Gravitational lensing:</strong> bending of light by the black hole's gravity.</div>
+        <div class="small"><strong>Time dilation:</strong> close to the hole, time appears to slow to distant observers.</div>
+      </div>
+
+      <div class="panel">
+        <h3 style="margin:0 0 8px 0">Tips</h3>
+        <ol class="small">
+          <li>Use <strong>Stylized Mode</strong> to make the black hole visually obvious for demos.</li>
+          <li>Switch to <em>Advanced</em> physics for stronger time-dilation coloring (heavier GPU use).</li>
+          <li>On low-end devices, toggle off <em>Lens</em> or reduce particles to improve performance.</li>
+        </ol>
+      </div>
+
+      <div class="footer">Open-source educational demo • Works offline • Resize your window to test responsiveness</div>
+    </aside>
+  </div>
+
+  <script>
+  // Robust loader + fallback strategy
+  (async function init(){
+    // ---- utilities ----
+    function loadScript(url){
+      return new Promise((resolve,reject)=>{
+        const s = document.createElement('script'); s.src = url; s.async = true; s.crossOrigin = 'anonymous';
+        s.onload = ()=>resolve(url);
+        s.onerror = ()=>reject(new Error('Failed to load: '+url));
+        document.head.appendChild(s);
+      });
+    }
+
+    async function tryLoadList(urls){
+      let lastErr = null;
+      for(const u of urls){
+        try{ await loadScript(u); return u; }catch(e){ lastErr = e; console.warn('script load failed',u,e); }
+      }
+      throw lastErr || new Error('No URLs provided');
+    }
+
+    function supportsWebGL(){ try{const c=document.createElement('canvas'); return !!window.WebGLRenderingContext && (c.getContext('webgl')||c.getContext('experimental-webgl')); }catch(e){return false;} }
+
+    // DOM refs and UI
+    const canvas = document.getElementById('three-canvas');
+    const fallbackCanvas = document.getElementById('fallback-canvas');
+    const loaderMsg = document.getElementById('loaderMsg');
+    const massSlider = document.getElementById('mass');
+    const spinSlider = document.getElementById('spin');
+    const particlesSlider = document.getElementById('particles');
+    const physicsSelect = document.getElementById('physics-mode');
+    const lensCheckbox = document.getElementById('toggle-lens');
+    const stylizedCheckbox = document.getElementById('stylized-mode');
+    const resetBtn = document.getElementById('reset');
+    const screenshotBtn = document.getElementById('screenshot');
+    const massVal = document.getElementById('mass-val');
+    const spinVal = document.getElementById('spin-val');
+    const particlesVal = document.getElementById('particles-val');
+
+    const state = { mass: parseFloat(massSlider.value), spin: parseFloat(spinSlider.value), particles: parseInt(particlesSlider.value), physics: physicsSelect.value, lens: lensCheckbox.checked, stylized: stylizedCheckbox.checked };
+    massVal.textContent = state.mass; spinVal.textContent = state.spin.toFixed(3); particlesVal.textContent = state.particles;
+
+    // UI wrappers: safe calls to runtime functions
+    massSlider.addEventListener('input', e=>{ state.mass = +e.target.value; massVal.textContent = state.mass; if(typeof window.updateBHParams==='function') try{ window.updateBHParams(); }catch(err){console.warn(err);} });
+    spinSlider.addEventListener('input', e=>{ state.spin = +e.target.value; spinVal.textContent = state.spin.toFixed(3); if(typeof window.updateBHParams==='function') try{ window.updateBHParams(); }catch(err){console.warn(err);} });
+    particlesSlider.addEventListener('input', e=>{ state.particles = +e.target.value; particlesVal.textContent = state.particles; if(typeof window.updateParticlesCount==='function') try{ window.updateParticlesCount(); }catch(err){console.warn(err);} });
+    physicsSelect.addEventListener('change', e=>{ state.physics = e.target.value; if(typeof window.updatePhysicsMode==='function') try{ window.updatePhysicsMode(); }catch(err){console.warn(err);} });
+    lensCheckbox.addEventListener('change', e=>{ state.lens = e.target.checked; if(typeof window.toggleLens==='function') try{ window.toggleLens(); }catch(err){console.warn(err);} });
+    stylizedCheckbox.addEventListener('change', e=>{ state.stylized = e.target.checked; if(typeof window.setStylizedMode==='function') try{ window.setStylizedMode(state.stylized); }catch(err){console.warn(err);} });
+
+    resetBtn.addEventListener('click', ()=>{ if(typeof window.resetScene==='function'){ try{ window.resetScene(); return; }catch(e){console.warn(e);} } massSlider.value=10; spinSlider.value=0.5; particlesSlider.value=3000; physicsSelect.value='simple'; lensCheckbox.checked=true; stylizedCheckbox.checked=true; massSlider.dispatchEvent(new Event('input')); spinSlider.dispatchEvent(new Event('input')); particlesSlider.dispatchEvent(new Event('input')); physicsSelect.dispatchEvent(new Event('change')); lensCheckbox.dispatchEvent(new Event('change')); stylizedCheckbox.dispatchEvent(new Event('change')); });
+
+    screenshotBtn.addEventListener('click', ()=>{ if(typeof window.takeScreenshot==='function'){ try{ window.takeScreenshot(); return; }catch(e){console.warn(e);} } try{ if(fallbackCanvas && fallbackCanvas.toDataURL){ const url=fallbackCanvas.toDataURL('image/png'); const a=document.createElement('a'); a.href=url; a.download='blackhole_screenshot.png'; a.click(); } else if(canvas && canvas.toDataURL){ const url=canvas.toDataURL('image/png'); const a=document.createElement('a'); a.href=url; a.download='blackhole_screenshot.png'; a.click(); } }catch(err){console.warn('screenshot fallback failed',err);} });
+
+    // If no WebGL, run fallback
+    if(!supportsWebGL()){ loaderMsg.textContent = 'WebGL not available — running 2D fallback.'; canvas.style.display='none'; fallbackCanvas.style.display='block'; runFallback2D(); return; }
+
+    // Attempt to load Three.js (try UMD from multiple CDNs). If that fails, attempt module import. If still fails -> fallback 2D
+    const threeUMD = [
+      'https://cdn.jsdelivr.net/npm/three@0.164.0/build/three.min.js',
+      'https://unpkg.com/three@0.164.0/build/three.min.js'
+    ];
+    const controlsUMD = [
+      'https://cdn.jsdelivr.net/npm/three@0.164.0/examples/js/controls/OrbitControls.js',
+      'https://unpkg.com/three@0.164.0/examples/js/controls/OrbitControls.js'
+    ];
+
+    let THREElib = null;
+    let OrbitControlsClass = null;
+
+    try{
+      loaderMsg.textContent = 'Loading Three.js (UMD)...';
+      await tryLoadList(threeUMD);
+      THREElib = window.THREE || null;
+      if(!THREElib){
+        // UMD script loaded but global not present — try module import
+        console.warn('UMD loaded but window.THREE not found — trying module import');
+        try{
+          const mod = await import('https://cdn.jsdelivr.net/npm/three@0.164.0/build/three.module.js');
+          THREElib = mod;
+        }catch(e){ console.warn('Module import failed',e); }
+      }
+    }catch(errUMD){
+      console.warn('UMD Three failed, trying module import',errUMD);
+      try{
+        loaderMsg.textContent = 'Loading Three.js (ESM)...';
+        const mod = await import('https://cdn.jsdelivr.net/npm/three@0.164.0/build/three.module.js');
+        THREElib = mod;
+      }catch(errMod){
+        console.error('Three.js load failed (UMD + ESM):',errUMD,errMod);
+        loaderMsg.textContent = 'Failed to load WebGL renderer — running 2D fallback.';
+        canvas.style.display='none'; fallbackCanvas.style.display='block'; runFallback2D(); return;
+      }
+    }
+
+    // Attempt to load OrbitControls (UMD). If that fails, try ESM import. If that fails, create local lightweight controls.
+    try{
+      loaderMsg.textContent = 'Loading OrbitControls...';
+      try{
+        await tryLoadList(controlsUMD);
+        // UMD OrbitControls should attach to global THREE
+        if(window.THREE && window.THREE.OrbitControls) OrbitControlsClass = window.THREE.OrbitControls;
+      }catch(e){
+        // UMD failed -> try module
+        try{
+          const modCtrl = await import('https://cdn.jsdelivr.net/npm/three@0.164.0/examples/jsm/controls/OrbitControls.js');
+          OrbitControlsClass = modCtrl.OrbitControls || null;
+        }catch(e2){
+          console.warn('OrbitControls module import failed',e2);
+        }
+      }
+    }catch(e){ console.warn('OrbitControls load attempts failed',e); }
+
+    // If THREElib is a module namespace (no global THREE), ensure references below use passed lib.
+    // Run ThreeJS renderer with either global or module THREElib, and either OrbitControlsClass or a local fallback controls.
+    try{
+      loaderMsg.style.display = 'none';
+      runThreeJS(THREElib, OrbitControlsClass);
+    }catch(e){
+      console.error('Failed to initialize Three.js scene:',e);
+      loaderMsg.textContent = 'Failed to initialize WebGL scene — running 2D fallback.';
+      canvas.style.display='none'; fallbackCanvas.style.display='block'; runFallback2D();
+    }
+
+    // --- runFallback2D ---
+    function runFallback2D(){
+      // simple 2D visualization
+      const ctx = fallbackCanvas.getContext('2d');
+      let w,h,center;
+      function resize(){ w = fallbackCanvas.width = Math.max(1,fallbackCanvas.clientWidth || window.innerWidth); h = fallbackCanvas.height = Math.max(1,fallbackCanvas.clientHeight || window.innerHeight); center = {x:w/2,y:h/2}; }
+      window.addEventListener('resize', resize); resize();
+      let t=0;
+      function draw(){ t+=0.01; ctx.fillStyle='rgba(0,0,6,1)'; ctx.fillRect(0,0,w,h); const R = Math.min(w,h)*0.08 * Math.sqrt(Math.max(1,state.mass)/10); ctx.beginPath(); ctx.arc(center.x,center.y,R,0,Math.PI*2); ctx.fillStyle='#000'; ctx.fill(); const grd = ctx.createRadialGradient(center.x,center.y,R*1.1, center.x,center.y, Math.min(w,h)); grd.addColorStop(0,'rgba(255,200,60,0.22)'); grd.addColorStop(0.4,'rgba(255,80,120,0.08)'); grd.addColorStop(1,'rgba(0,0,0,0)'); ctx.fillStyle=grd; ctx.fillRect(0,0,w,h); const cnt=Math.min(200,Math.floor(state.particles/10)); for(let i=0;i<cnt;i++){ const ang=(t*0.2*(1+state.spin))+i*(Math.PI*2/cnt); const rad=R*1.5+(i%5)*6 + 40*Math.sin(t*0.5+i); const x=center.x+rad*Math.cos(ang); const y=center.y+(rad*0.36)*Math.sin(ang)*0.6; const depth=1/(1+rad*0.002); ctx.beginPath(); ctx.arc(x,y,Math.max(1,3*depth),0,Math.PI*2); ctx.fillStyle=`rgba(255,${120+Math.floor(100*depth)},${80},${0.8*depth})`; ctx.fill(); }
+        requestAnimationFrame(draw);
+      }
+      draw();
+      // expose reset/screenshot
+      window.resetScene = ()=>{ massSlider.value=10; spinSlider.value=0.5; particlesSlider.value=3000; physicsSelect.value='simple'; lensCheckbox.checked=true; stylizedCheckbox.checked=true; massSlider.dispatchEvent(new Event('input')); spinSlider.dispatchEvent(new Event('input')); particlesSlider.dispatchEvent(new Event('input')); physicsSelect.dispatchEvent(new Event('change')); lensCheckbox.dispatchEvent(new Event('change')); stylizedCheckbox.dispatchEvent(new Event('change')); };
+      window.takeScreenshot = ()=>{ try{ const url = fallbackCanvas.toDataURL('image/png'); const a=document.createElement('a'); a.href=url; a.download='blackhole_screenshot.png'; a.click(); }catch(e){ console.warn(e); } };
+      setTimeout(()=>{ console.info('Fallback mode active'); },300);
+    }
+
+    // --- runThreeJS ---
+    function runThreeJS(THREElib, OrbitControlsClass){
+      // Accept either global namespace (window.THREE) or module namespace.
+      const THREE = THREElib;
+      // Setup renderer, scene, camera similar to earlier code but using THREE variable
+      const renderer = new THREE.WebGLRenderer({canvas:canvas,antialias:true,preserveDrawingBuffer:true});
+      renderer.setPixelRatio(window.devicePixelRatio || 1);
+      const startW = Math.max(1, canvas.clientWidth || window.innerWidth);
+      const startH = Math.max(1, canvas.clientHeight || window.innerHeight);
+      renderer.setSize(startW, startH, false);
+      const scene = new THREE.Scene(); scene.background = new THREE.Color(0x02020a);
+      const camera = new THREE.PerspectiveCamera(50, startW/startH, 0.1, 2000); camera.position.set(0,28,90);
+
+      // Controls: prefer provided OrbitControlsClass; otherwise create a lightweight custom control
+      let controls;
+      if(OrbitControlsClass){
+        try{ controls = new OrbitControlsClass(camera, renderer.domElement); controls.enableDamping = true; controls.dampingFactor = 0.08; }
+        catch(e){ console.warn('OrbitControlsClass failed to instantiate', e); controls = createFallbackControls(THREE, camera, renderer.domElement); }
+      } else if(typeof THREE.OrbitControls === 'function'){
+        try{ controls = new THREE.OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.dampingFactor = 0.08; }catch(e){ console.warn('Global OrbitControls failed',e); controls = createFallbackControls(THREE, camera, renderer.domElement); }
+      } else {
+        controls = createFallbackControls(THREE, camera, renderer.domElement);
+      }
+
+      // Light + objects (keep stylized enhancements)
+      scene.add(new THREE.AmbientLight(0xffffff,0.2)); const dir = new THREE.DirectionalLight(0xffffff,0.5); dir.position.set(10,20,10); scene.add(dir);
+      const eventRadius = ()=>Math.max(1,state.mass*0.8);
+      const bhGeo = new THREE.SphereGeometry(1,64,64); const bhMat = new THREE.MeshBasicMaterial({color:0x000000}); const bhMesh = new THREE.Mesh(bhGeo,bhMat); bhMesh.renderOrder = 2; scene.add(bhMesh);
+
+      // Rim material
+      const rimMat = new THREE.ShaderMaterial({ transparent:true, blending:THREE.AdditiveBlending, depthWrite:false, uniforms:{ intensity:{value:1.8}, color:{value:new THREE.Color(0xffaa66)}, stylized:{value: state.stylized?1:0} }, vertexShader:`varying vec3 vNormal; void main(){ vNormal = normalMatrix * normal; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`, fragmentShader:`precision highp float; varying vec3 vNormal; uniform float intensity; uniform vec3 color; uniform float stylized; void main(){ float fres = pow(1.0 - abs(dot(normalize(vNormal), vec3(0.0,0.0,1.0))), 1.5); float rim = smoothstep(0.0,0.6, fres) * intensity * stylized; gl_FragColor = vec4(color * rim, rim); }` });
+      const rimMesh = new THREE.Mesh(bhGeo, rimMat); rimMesh.scale.set(1.02,1.02,1.02); rimMesh.renderOrder = 3; scene.add(rimMesh);
+
+      // Disk
+      const diskGeo = new THREE.RingGeometry(1.6,6,512);
+      const diskMat = new THREE.ShaderMaterial({ uniforms:{ time:{value:0}, spin:{value:state.spin}, mass:{value:state.mass}, resolution:{value:new THREE.Vector2(startW,startH)}, stylized:{value: state.stylized?1:0} }, vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`, fragmentShader:`precision highp float; varying vec2 vUv; uniform float time; uniform float spin; uniform float mass; uniform float stylized; void main(){ vec2 uv = vUv*2.0 - 1.0; float r = length(uv); float t = smoothstep(0.0,1.0,1.0 - r); float dop = 0.5 + 0.9*sin(uv.x*10.0 + time*2.0 + spin*8.0) * mix(0.5,1.2,stylized); vec3 cold = vec3(0.55,0.8,1.0); vec3 hot = vec3(1.0,0.45,0.12); vec3 color = mix(hot,cold,smoothstep(0.2,1.0,uv.x*0.5+0.5)); color = mix(vec3(0.02,0.01,0.05), color, pow(t,1.6)); color *= mix(1.0,2.4,stylized); float redshift = 1.0 - 0.25*smoothstep(0.0,1.0,r) * mix(1.0,0.5,stylized); color.r *= redshift; float alpha = smoothstep(0.99,0.25,r); gl_FragColor = vec4(color * (0.8 + 0.6 * dop), alpha * (0.6 + 0.4*stylized)); }`, transparent:true, depthWrite:false, blending:THREE.AdditiveBlending });
+      const diskMesh = new THREE.Mesh(diskGeo, diskMat); diskMesh.rotation.x = -Math.PI/2; diskMesh.scale.set(10,10,10); diskMesh.renderOrder = 1; scene.add(diskMesh);
+
+      // Photon ring
+      const ringGeo = new THREE.RingGeometry(0.99,1.12,256);
+      const ringMat = new THREE.ShaderMaterial({ uniforms:{ intensity:{value:3.0}, color:{value:new THREE.Color(0xffcc66)}, stylized:{value: state.stylized?1:0} }, vertexShader:`varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`, fragmentShader:`precision highp float; varying vec2 vUv; uniform float intensity; uniform vec3 color; uniform float stylized; void main(){ vec2 c = vUv - vec2(0.5); float r = length(c)*2.0; float glow = smoothstep(0.6,0.48,r) - smoothstep(0.48,0.4,r); glow = pow(glow,0.8) * intensity * stylized; gl_FragColor = vec4(color * glow, glow); }`, transparent:true, blending:THREE.AdditiveBlending, depthWrite:false });
+      const photonRing = new THREE.Mesh(ringGeo, ringMat); photonRing.rotation.x = Math.PI/2; photonRing.renderOrder = 4; scene.add(photonRing);
+
+      // Particles
+      let particleSystem;
+      function createParticles(count){ if(particleSystem) scene.remove(particleSystem); const geometry = new THREE.InstancedBufferGeometry(); const baseGeo = new THREE.PlaneGeometry(1,1); geometry.index = baseGeo.index; geometry.attributes.position = baseGeo.attributes.position; geometry.attributes.uv = baseGeo.attributes.uv; const offsets = new Float32Array(count*3); const scales = new Float32Array(count); const phases = new Float32Array(count); for(let i=0;i<count;i++){ const a = Math.random()*Math.PI*2; const rad = 12 + Math.random()*80; offsets[i*3+0] = Math.cos(a)*rad; offsets[i*3+1] = (Math.random()-0.5)*2.0; offsets[i*3+2] = Math.sin(a)*rad; scales[i] = 0.6 + Math.random()*2.5; phases[i] = Math.random()*Math.PI*2; } geometry.setAttribute('offset', new THREE.InstancedBufferAttribute(offsets,3)); geometry.setAttribute('scale', new THREE.InstancedBufferAttribute(scales,1)); geometry.setAttribute('phase', new THREE.InstancedBufferAttribute(phases,1)); const particleMat = new THREE.ShaderMaterial({ uniforms:{time:{value:0}, mass:{value:state.mass}, spin:{value:state.spin}, physicsMode:{value: state.physics==='advanced'?1:0}, stylized:{value: state.stylized?1:0}}, vertexShader:`attribute vec3 offset; attribute float scale; attribute float phase; uniform float time; varying float vDepth; void main(){ vec3 pos = offset; float ang = time*0.2*(1.0+phase*0.1) + phase; float r = length(offset.xz); float omega = 1.0/(0.1 + pow(r*0.02,1.2)); float spinEffect = 1.0 + 0.6*mod(phase,1.0); float a = ang * omega * spinEffect; vec3 p = vec3(cos(a)*r, offset.y, sin(a)*r); vec4 mv = modelViewMatrix * vec4(p,1.0); vDepth = -mv.z; vec4 mvPosition = mv; mvPosition.xyz += position.xyz * scale * (1.0 + 0.3*clamp(1.0/r,0.0,1.0)); gl_Position = projectionMatrix * mvPosition; }`, fragmentShader:`precision highp float; varying float vDepth; uniform float time; uniform float mass; uniform float spin; uniform float physicsMode; uniform float stylized; void main(){ vec2 qq = gl_PointCoord - vec2(0.5); float d = length(qq); if(d>0.5) discard; float brightness = 1.2/(1.0 + vDepth*0.02); float tcol = physicsMode>0.5 ? clamp(1.0 - vDepth*0.004,0.2,1.0) : 1.0; vec3 base = vec3(1.0,0.78,0.4) * (1.0 + stylized*0.6); gl_FragColor = vec4(base*brightness*tcol, 1.0); }`, transparent:true, depthWrite:false, blending:THREE.AdditiveBlending }); particleSystem = new THREE.Mesh(geometry, particleMat); particleSystem.frustumCulled = false; scene.add(particleSystem); }
+
+      // Postprocessing setup
+      const renderTarget = new THREE.WebGLRenderTarget(startW, startH);
+      const fsQuadGeo = new THREE.PlaneGeometry(2,2);
+      const lensMat = new THREE.ShaderMaterial({ uniforms:{tDiffuse:{value:null}, strength:{value:0.6}, center:{value:new THREE.Vector2(0.5,0.5)}, resolution:{value:new THREE.Vector2(startW,startH)}, stylized:{value: state.stylized?1:0}}, vertexShader:`void main(){ gl_Position = vec4(position,1.0); }`, fragmentShader:`precision highp float; uniform sampler2D tDiffuse; uniform float strength; uniform vec2 center; uniform vec2 resolution; uniform float stylized; void main(){ vec2 uv = gl_FragCoord.xy/resolution; vec2 p = (uv-center); float r = length(p); float theta = atan(p.y,p.x); float warp = 1.0 + strength * exp(-r*12.0) * (1.0 + 2.0*r) * (1.0 + 1.0*stylized); vec2 sampleUV = center + vec2(cos(theta), sin(theta)) * r * warp; vec4 col = texture2D(tDiffuse, sampleUV); float vign = smoothstep(0.9,0.35,r); if(stylized>0.5) col.rgb *= vec3(1.05,1.02,0.98); gl_FragColor = col * vign; }`, transparent:false });
+      const fsQuad = new THREE.Mesh(fsQuadGeo, lensMat); const postScene = new THREE.Scene(); postScene.add(fsQuad); const postCamera = new THREE.Camera();
+
+      // resize
+      function onResize(){ const w = Math.max(1, canvas.clientWidth || window.innerWidth); const h = Math.max(1, canvas.clientHeight || window.innerHeight); renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); if(diskMat && diskMat.uniforms) diskMat.uniforms.resolution.value.set(w,h); if(lensMat && lensMat.uniforms) lensMat.uniforms.resolution.value.set(w,h); renderTarget.setSize(w,h); }
+      window.addEventListener('resize', onResize); onResize();
+
+      createParticles(state.particles);
+
+      // update functions exposed for UI
+      function updateBHParams(){ const r = eventRadius(); bhMesh.scale.set(r,r,r); rimMesh.scale.set(r*1.01,r*1.01,r*1.01); photonRing.scale.set(r*10,r*10,r*10); const scale = 1 + Math.log(state.mass+1); diskMesh.scale.set(10*scale,10*scale,10*scale); if(diskMat && diskMat.uniforms){ diskMat.uniforms.spin.value = state.spin; diskMat.uniforms.mass.value = state.mass; } if(particleSystem && particleSystem.material && particleSystem.material.uniforms){ particleSystem.material.uniforms.mass.value = state.mass; particleSystem.material.uniforms.spin.value = state.spin; } }
+      function updateParticlesCount(){ createParticles(state.particles); }
+      function updatePhysicsMode(){ if(particleSystem && particleSystem.material && particleSystem.material.uniforms) particleSystem.material.uniforms.physicsMode.value = state.physics==='advanced'?1:0; }
+      function toggleLens(){ /* no-op: render loop checks state.lens */ }
+      function setStylizedMode(enabled){ state.stylized = !!enabled; if(diskMat && diskMat.uniforms) diskMat.uniforms.stylized.value = state.stylized?1:0; if(rimMat && rimMat.uniforms) rimMat.uniforms.stylized.value = state.stylized?1:0; if(particleSystem && particleSystem.material && particleSystem.material.uniforms) particleSystem.material.uniforms.stylized.value = state.stylized?1:0; if(lensMat && lensMat.uniforms) lensMat.uniforms.stylized.value = state.stylized?1:0; if(photonRing && photonRing.material && photonRing.material.uniforms) photonRing.material.uniforms.stylized.value = state.stylized?1:0; }
+      function resetSceneImpl(){ massSlider.value=10; spinSlider.value=0.5; particlesSlider.value=3000; physicsSelect.value='simple'; lensCheckbox.checked=true; stylizedCheckbox.checked=true; massSlider.dispatchEvent(new Event('input')); spinSlider.dispatchEvent(new Event('input')); particlesSlider.dispatchEvent(new Event('input')); physicsSelect.dispatchEvent(new Event('change')); lensCheckbox.dispatchEvent(new Event('change')); stylizedCheckbox.dispatchEvent(new Event('change')); state.mass = parseFloat(massSlider.value); state.spin = parseFloat(spinSlider.value); state.particles = parseInt(particlesSlider.value); state.physics = physicsSelect.value; state.lens = lensCheckbox.checked; state.stylized = stylizedCheckbox.checked; updateParticlesCount(); updateBHParams(); updatePhysicsMode(); setStylizedMode(state.stylized); }
+      function takeScreenshotImpl(){ try{ if(renderer && renderer.domElement && renderer.domElement.toBlob){ renderer.domElement.toBlob(blob=>{ const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='blackhole_screenshot.png'; a.click(); URL.revokeObjectURL(url); }); } else if(fallbackCanvas && fallbackCanvas.toDataURL){ const url=fallbackCanvas.toDataURL(); const a=document.createElement('a'); a.href=url; a.download='blackhole_screenshot.png'; a.click(); } }catch(e){ console.warn('screenshot failed',e); } }
+
+      // animation
+      const clock = new THREE.Clock(); function animate(){ requestAnimationFrame(animate); const t = clock.getElapsedTime(); if(controls && typeof controls.update==='function') controls.update(); if(diskMat && diskMat.uniforms) diskMat.uniforms.time.value = t; if(particleSystem && particleSystem.material && particleSystem.material.uniforms) particleSystem.material.uniforms.time.value = t; renderer.setRenderTarget(renderTarget); renderer.render(scene,camera); renderer.setRenderTarget(null); if(state.lens){ lensMat.uniforms.tDiffuse.value = renderTarget.texture; renderer.render(postScene, postCamera); } else { renderer.render(scene,camera); } } animate();
+
+      // expose
+      window.updateBHParams = updateBHParams; window.updateParticlesCount = updateParticlesCount; window.updatePhysicsMode = updatePhysicsMode; window.toggleLens = toggleLens; window.resetScene = resetSceneImpl; window.takeScreenshot = takeScreenshotImpl; window.setStylizedMode = setStylizedMode;
+
+      // initial
+      updateBHParams(); setStylizedMode(state.stylized);
+      setTimeout(()=>{ console.info('Three.js scene running — runtime functions exposed'); console.assert(typeof window.resetScene==='function'); console.assert(typeof window.updateBHParams==='function'); },500);
+
+      // --- helper: fallback controls (simple orbital) ---
+      function createFallbackControls(THREE, camera, dom){
+        const target = new THREE.Vector3(0,0,0);
+        let isDown=false, startX=0, startY=0;
+        const spherical = { theta: Math.PI*0.5, phi: Math.PI*0.25, radius: camera.position.length() };
+        function updateCamera(){ const r = spherical.radius; const x = r*Math.sin(spherical.phi)*Math.cos(spherical.theta); const y = r*Math.cos(spherical.phi); const z = r*Math.sin(spherical.phi)*Math.sin(spherical.theta); camera.position.set(x,y,z); camera.lookAt(target); }
+        function onDown(e){ isDown=true; startX = e.clientX||e.touches[0].clientX; startY = e.clientY||e.touches[0].clientY; dom.style.cursor='grabbing'; }
+        function onMove(e){ if(!isDown) return; const x = e.clientX||e.touches[0].clientX; const y = e.clientY||e.touches[0].clientY; const dx = (x-startX)*0.005; const dy = (y-startY)*0.005; startX = x; startY = y; spherical.theta -= dx; spherical.phi = Math.max(0.05, Math.min(Math.PI-0.05, spherical.phi - dy)); updateCamera(); }
+        function onUp(){ isDown=false; dom.style.cursor='auto'; }
+        function onWheel(e){ e.preventDefault(); spherical.radius = Math.max(10, Math.min(500, spherical.radius + e.deltaY*0.05)); updateCamera(); }
+        dom.addEventListener('pointerdown', onDown); window.addEventListener('pointermove', onMove); window.addEventListener('pointerup', onUp); dom.addEventListener('wheel', onWheel, {passive:false}); updateCamera(); return { update: function(){ /* nothing to do — camera updated via events */ } };
+      }
+    }
+  })();
+  </script>
 </body>
 </html>
