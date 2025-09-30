@@ -1,6 +1,6 @@
-[# Cosmic Black Hole Simulator
+Black Hole Simulator
 
-[An interactive, visually stunning black hole simulation built with HTML5, CSS3, and JavaScript. Experience the physics of spacetime curvature, gravitational lensing, and matter accretion in real-time.
+An interactive, visually stunning black hole simulation built with HTML5, CSS3, and JavaScript. Experience the physics of spacetime curvature, gravitational lensing, and matter accretion in real-time.
 
 ## Features
 
