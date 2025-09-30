@@ -1,6 +1,6 @@
-# Cosmic Black Hole Simulator
+[# Cosmic Black Hole Simulator
 
-An interactive, visually stunning black hole simulation built with HTML5, CSS3, and JavaScript. Experience the physics of spacetime curvature, gravitational lensing, and matter accretion in real-time.
+[An interactive, visually stunning black hole simulation built with HTML5, CSS3, and JavaScript. Experience the physics of spacetime curvature, gravitational lensing, and matter accretion in real-time.
 
 ## Features
 
@@ -139,6 +139,323 @@ Multiple black hole systems
 
 Customizable physics parameters
 
-Sound effects and spatial audio
+Sound effects and spatial audio](https://img.shields.io/badge/Visualization-WebGL%252FThree.js-blue
+https://img.shields.io/badge/License-MIT-green
+https://img.shields.io/badge/Accessibility-Offline%2520Capable-orange
+
+An interactive educational black hole simulator featuring real-time 3D visualization with WebGL/Three.js and a robust 2D fallback system.
+
+🌌 Features
+Real-time 3D Visualization - WebGL-powered black hole with accretion disk, photon ring, and gravitational lensing
+
+Robust Loading System - Multiple CDN fallbacks and graceful 2D degradation
+
+Interactive Controls - Adjust mass, spin, particle count, and physics modes
+
+Educational Focus - Detailed explanations of astrophysical phenomena
+
+Responsive Design - Works on desktop and mobile devices
+
+Offline Capable - Self-contained single HTML file
+
+🚀 Quick Start
+Simply open index.html in a modern web browser. No installation or build process required!
+
+bash
+# Clone or download the file, then:
+open blackhole-simulator.html
+# or
+python -m http.server  # Serve locally
+🎮 Controls & Parameters
+Black Hole Properties
+Mass (M☉): 1-100 solar masses (affects event horizon size)
+
+Spin (a): 0-0.999 dimensionless angular momentum
+
+Particles: 100-20,000 orbiting particles
+
+Visualization Modes
+Physics Mode:
+
+Simplified: Better performance
+
+Advanced: Relativistic effects (time dilation coloring)
+
+Lens Effect: Toggle gravitational lensing
+
+Stylized Mode: Enhanced visual effects for educational clarity
+
+Interaction
+Orbit Controls: Click and drag to rotate, scroll to zoom
+
+Reset: Restore default parameters
+
+Screenshot: Capture current visualization
+
+📚 Educational Content
+The simulator demonstrates:
+
+Event Horizon: Boundary of no return
+
+Accretion Disk: Hot plasma orbiting the black hole
+
+Photon Ring: Light orbiting the black hole
+
+Gravitational Lensing: Bending of light by gravity
+
+Time Dilation: Relativistic time effects
+
+Doppler Beaming: Frequency shifts in orbiting material
+
+🛠️ Technical Details
+Architecture
+Primary Renderer: Three.js (WebGL)
+
+Fallback System: Canvas 2D rendering
+
+CDN Strategy: Multiple sources with graceful degradation
+
+Shader-Based: Custom GLSL shaders for visual effects
+
+Performance Optimization
+Adaptive particle counts
+
+Toggleable effects for low-end devices
+
+Efficient instanced rendering for particles
+
+Browser Compatibility
+Modern Browsers: Full WebGL experience
+
+Legacy Support: Automatic 2D fallback
+
+Mobile: Touch-optimized controls
+
+🎨 Visual Features
+Dynamic accretion disk with Doppler shifting
+
+Photon ring visualization
+
+Gravitational lensing post-processing
+
+Particle systems representing orbiting matter
+
+Rim glow and atmospheric effects
+
+Real-time parameter updates
+
+🔧 Development
+The entire application is contained in a single HTML file with:
+
+Inline CSS for styling
+
+Embedded JavaScript with modular structure
+
+External library loading with fallbacks
+
+Comprehensive error handling
+
+Key Functions
+runThreeJS(): Main WebGL renderer
+
+runFallback2D(): Canvas 2D alternative
+
+Robust loader with multiple CDN attempts
+
+Runtime function exposure for UI interaction
+
+🌟 Usage Tips
+For Demos: Enable "Stylized Mode" for maximum visual impact
+
+Performance: Reduce particles or disable lensing on low-end devices
+
+Education: Switch to "Advanced" physics for relativistic effects
+
+Screenshots: Use the screenshot button to capture visuals
+
+📱 Mobile Support
+Touch-optimized orbit controls
+
+Responsive sidebar that overlays on mobile
+
+Adaptive performance settings
+
+🔬 Scientific Context
+While simplified for educational purposes, the simulator incorporates concepts from:
+
+General Relativity
+
+Kerr metric (rotating black holes)
+
+Accretion disk physics
+
+Gravitational lensing theory
+
+📄 License
+MIT License - Feel free to use for educational and non-commercial purposes.
+
+🤝 Contributing
+This is an educational demonstration. Suggestions and improvements are welcome!
+
+Built with Three.js • Works offline • Educational focus)
 
 Export simulation data
+](https://img.shields.io/badge/Visualization-WebGL%252FThree.js-blue
+https://img.shields.io/badge/License-MIT-green
+https://img.shields.io/badge/Accessibility-Offline%2520Capable-orange
+
+An interactive educational black hole simulator featuring real-time 3D visualization with WebGL/Three.js and a robust 2D fallback system.
+
+🌌 Features
+Real-time 3D Visualization - WebGL-powered black hole with accretion disk, photon ring, and gravitational lensing
+
+Robust Loading System - Multiple CDN fallbacks and graceful 2D degradation
+
+Interactive Controls - Adjust mass, spin, particle count, and physics modes
+
+Educational Focus - Detailed explanations of astrophysical phenomena
+
+Responsive Design - Works on desktop and mobile devices
+
+Offline Capable - Self-contained single HTML file
+
+🚀 Quick Start
+Simply open index.html in a modern web browser. No installation or build process required!
+
+bash
+# Clone or download the file, then:
+open blackhole-simulator.html
+# or
+python -m http.server  # Serve locally
+🎮 Controls & Parameters
+Black Hole Properties
+Mass (M☉): 1-100 solar masses (affects event horizon size)
+
+Spin (a): 0-0.999 dimensionless angular momentum
+
+Particles: 100-20,000 orbiting particles
+
+Visualization Modes
+Physics Mode:
+
+Simplified: Better performance
+
+Advanced: Relativistic effects (time dilation coloring)
+
+Lens Effect: Toggle gravitational lensing
+
+Stylized Mode: Enhanced visual effects for educational clarity
+
+Interaction
+Orbit Controls: Click and drag to rotate, scroll to zoom
+
+Reset: Restore default parameters
+
+Screenshot: Capture current visualization
+
+📚 Educational Content
+The simulator demonstrates:
+
+Event Horizon: Boundary of no return
+
+Accretion Disk: Hot plasma orbiting the black hole
+
+Photon Ring: Light orbiting the black hole
+
+Gravitational Lensing: Bending of light by gravity
+
+Time Dilation: Relativistic time effects
+
+Doppler Beaming: Frequency shifts in orbiting material
+
+🛠️ Technical Details
+Architecture
+Primary Renderer: Three.js (WebGL)
+
+Fallback System: Canvas 2D rendering
+
+CDN Strategy: Multiple sources with graceful degradation
+
+Shader-Based: Custom GLSL shaders for visual effects
+
+Performance Optimization
+Adaptive particle counts
+
+Toggleable effects for low-end devices
+
+Efficient instanced rendering for particles
+
+Browser Compatibility
+Modern Browsers: Full WebGL experience
+
+Legacy Support: Automatic 2D fallback
+
+Mobile: Touch-optimized controls
+
+🎨 Visual Features
+Dynamic accretion disk with Doppler shifting
+
+Photon ring visualization
+
+Gravitational lensing post-processing
+
+Particle systems representing orbiting matter
+
+Rim glow and atmospheric effects
+
+Real-time parameter updates
+
+🔧 Development
+The entire application is contained in a single HTML file with:
+
+Inline CSS for styling
+
+Embedded JavaScript with modular structure
+
+External library loading with fallbacks
+
+Comprehensive error handling
+
+Key Functions
+runThreeJS(): Main WebGL renderer
+
+runFallback2D(): Canvas 2D alternative
+
+Robust loader with multiple CDN attempts
+
+Runtime function exposure for UI interaction
+
+🌟 Usage Tips
+For Demos: Enable "Stylized Mode" for maximum visual impact
+
+Performance: Reduce particles or disable lensing on low-end devices
+
+Education: Switch to "Advanced" physics for relativistic effects
+
+Screenshots: Use the screenshot button to capture visuals
+
+📱 Mobile Support
+Touch-optimized orbit controls
+
+Responsive sidebar that overlays on mobile
+
+Adaptive performance settings
+
+🔬 Scientific Context
+While simplified for educational purposes, the simulator incorporates concepts from:
+
+General Relativity
+
+Kerr metric (rotating black holes)
+
+Accretion disk physics
+
+Gravitational lensing theory
+
+📄 License
+MIT License - Feel free to use for educational and non-commercial purposes.
+
+🤝 Contributing
+This is an educational demonstration. Suggestions and improvements are welcome!
+
+Built with Three.js • Works offline • Educational focus)
